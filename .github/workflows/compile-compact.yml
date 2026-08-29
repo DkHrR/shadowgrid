@@ -39,8 +39,7 @@ jobs:
 
       - name: Run Runtime Verification Tests
         run: |
-          npx tsc run-test.ts --target ES2022 --module CommonJS --moduleResolution node --esModuleInterop || true
-          node run-test.js > test-results.md 2>&1 || true
+          npx vitest run run-test.ts > test-results.md 2>&1 || true
 
       - name: Commit test results
         run: |

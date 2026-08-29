@@ -12,7 +12,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import pino from 'pino';
 
-async function main() {
+import { test } from 'vitest';
+test('E2E Runtime verification', async () => {
     const logger = pino({ level: 'info' });
     
     let distPath = './dist';
@@ -132,6 +133,7 @@ async function main() {
     await walletProvider.stop();
     await testEnv.shutdown();
 }
-main().catch(e => { console.error(e); process.exit(1); });
+});
+
 
 
