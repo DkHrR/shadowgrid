@@ -2,9 +2,49 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
+// Ledger storing player commitments (hash of private state) and nonces for replay protection
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 export ledger nonces: Map<Bytes<32>, Uint<64>>;
 
+// Ledger for game sessions (optional future use)
+export ledger games: Map<Bytes<32>, Bytes<32>>;
+
+// ---------------------------------------------------------------------------
+// Circuit: create_game
+// Registers a new game session. "admin" is the creator, "game_id" is a unique identifier,
+// and "game_commit" is a public commitment for the game state (e.g., initial board hash).
+// ---------------------------------------------------------------------------
+export circuit create_game(
+  admin: Bytes<32>,
+  game_id: Bytes<32>,
+  game_commit: Bytes<32>
+): [] {
+  // Store the game commitment; no further constraints at creation.
+  games.insert(disclose(admin), disclose(game_commit));
+}
+
+// ---------------------------------------------------------------------------
+// Circuit: register_player
+// Registers a player within a game. Stores the player's commitment and initial nonce.
+// ---------------------------------------------------------------------------
+export circuit register_player(
+  game_id: Bytes<32>,
+  player: Bytes<32>,
+  player_commit: Bytes<32>,
+  init_nonce: Uint<64>
+): [] {
+  // In a full implementation we'd verify that game_id exists in games map.
+  // For now we simply store the commitment and nonce.
+  commitments.insert(disclose(player), disclose(player_commit));
+  nonces.insert(disclose(player), disclose(init_nonce));
+}
+
+// ---------------------------------------------------------------------------
+// Circuit: move
+// Performs a movement transition for a player. Enforces the movement constraints
+// (bounds, Manhattan distance, health integrity, nonce increment, commitment hash).
+// The constraints are expressed via public inputs C_old and C_new.
+// ---------------------------------------------------------------------------
 export circuit move(
   user: Bytes<32>,
   commitment: Bytes<32>,
