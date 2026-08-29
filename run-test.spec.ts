@@ -75,6 +75,9 @@ test('E2E Runtime verification', async () => {
 
     const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000042';
 
+    const wallet = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
+    await wallet.start();
+
     const providers = {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'test-private-state',
@@ -83,10 +86,10 @@ test('E2E Runtime verification', async () => {
             accountId: GENESIS_MINT_WALLET_SEED
         }),
         publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
-        zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath, 'contract')),
+        zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath)),
         proofProvider: httpClientProofProvider(envConfig.proofServer),
-        walletProvider: new MidnightWalletProvider(envConfig.node),
-        midnightProvider: new MidnightWalletProvider(envConfig.node)
+        walletProvider: wallet,
+        midnightProvider: wallet
     };
 
     try {
@@ -96,6 +99,7 @@ test('E2E Runtime verification', async () => {
             privateStateId: 'test-private-state',
             initialPrivateState: {}
         });
+
         logger.info('Contract deployed successfully at ' + deployedContract.deployTxData.public.contractAddress);
 
         const game_id = 1n;
@@ -172,6 +176,7 @@ test('E2E Runtime verification', async () => {
         fs.writeFileSync('test-results.md', markdownReport);
 
     } finally {
+        if (typeof wallet !== 'undefined') await wallet.stop();
         await testEnv.shutdown();
     }
 }, 300000);
