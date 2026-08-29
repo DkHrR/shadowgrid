@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - '**.compact'
+      - '.github/workflows/compile-compact.yml'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -22,20 +23,18 @@ jobs:
         with:
           node-version: '24' # Matching your local version
           
-      # Using npm install because we don't have a package-lock.json committed yet, 
-      # but normally this should be npm ci.
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Fetch compactc v0.23
+      - name: Fetch compactc v0.31.1
         run: npx fetch-compactc
         env:
-          COMPACTC_VERSION: "0.23"
+          COMPACTC_VERSION: "0.31.1"
 
       - name: Compile shadowgrid.compact
         run: npx run-compactc shadowgrid.compact dist
         env:
-          COMPACTC_VERSION: "0.23"
+          COMPACTC_VERSION: "0.31.1"
 
       - name: Upload Compilation Artifacts
         uses: actions/upload-artifact@v4
