@@ -5,13 +5,12 @@ import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-confi
 import { toHex, fromHex } from '@midnight-ntwrk/midnight-js-utils';
 import { Transaction } from '@midnight-ntwrk/midnight-js-types';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
+import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 
 // @ts-ignore
 import { contract as shadowgridContract, Contract as ShadowgridContractClass } from '../dist/contract/index.js';
 // @ts-ignore
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
-// @ts-ignore
-import { QueryContext, CostModel, createConstructorContext, sampleContractAddress } from '@midnight-ntwrk/midnight-js-protocol/compact-runtime';
 
 const log = (msg: string) => {
   const logs = document.getElementById('logs');
@@ -21,14 +20,30 @@ const log = (msg: string) => {
   }
 };
 
+type PrivateState = {
+    game_id: bigint;
+    player_id: Uint8Array;
+    x: bigint;
+    y: bigint;
+    health: bigint;
+    nonce: bigint;
+    salt: Uint8Array;
+};
+
 let connectedAPI: any = null;
-let currentX = 2;
-let currentY = 2;
-let nonce = 1n;
-let currentSalt = new Uint8Array(32);
 let providers: any = null;
 let deployedContract: any = null;
-let gameId = 1n; 
+let gameId = 1n;
+let shieldedAddresses: any = null;
+
+const witnesses = {
+    localState: ({ privateState }: any) => {
+        return [privateState, privateState];
+    }
+};
+
+const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ShadowgridContractClass)
+  .pipe(CompiledContract.withWitnesses(witnesses));
 
 document.getElementById('connect-btn')?.addEventListener('click', async () => {
   try {
@@ -38,13 +53,17 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
       log('Error: Midnight Lace extension not found');
       return;
     }
-    connectedAPI = await mw.mnLace.connect('testnet');
+    
+    setNetworkId('Testnet');
+    
+    connectedAPI = await mw.mnLace.connect('Testnet');
     log('Wallet connected successfully!');
     document.getElementById('status-text')!.innerText = 'Connected';
     
-    const addresses = await connectedAPI.getShieldedAddresses();
-    document.getElementById('wallet-addr')!.innerText = addresses.shieldedCoinPublicKey.substring(0, 16) + '...';
+    shieldedAddresses = await connectedAPI.getShieldedAddresses();
+    document.getElementById('wallet-addr')!.innerText = shieldedAddresses.shieldedCoinPublicKey.substring(0, 16) + '...';
     
+    document.getElementById('host-btn')?.removeAttribute('disabled');
     document.getElementById('join-btn')?.removeAttribute('disabled');
   } catch (e: any) {
     log('Connection failed: ' + e.message);
@@ -54,14 +73,13 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
 const getProviders = async () => {
   if (providers) return providers;
   const config = await connectedAPI.getConfiguration();
-  const shieldedAddresses = await connectedAPI.getShieldedAddresses();
   
   const keyMaterialProvider = new FetchZkConfigProvider(window.location.origin, fetch.bind(window));
   
   providers = {
     privateStateProvider: levelPrivateStateProvider({
       privateStateStoreName: 'shadowgrid-private-state',
-      privateStoragePasswordProvider: async () => 'shadowgrid-production-password-998877', 
+      privateStoragePasswordProvider: async () => 'shadowgrid-production-password-998877',
       accountId: shieldedAddresses.shieldedCoinPublicKey
     }),
     zkConfigProvider: keyMaterialProvider,
@@ -86,20 +104,20 @@ const getProviders = async () => {
   return providers;
 };
 
-const computeHash = (game_id: bigint, player_id: Uint8Array, x: bigint, y: bigint, health: bigint, n: bigint, s: Uint8Array) => {
-    const localContract = new ShadowgridContractClass({});
-    const circuitContext = {
-        currentPrivateState: {},
-        currentZswapLocalState: {},
-        costModel: CostModel.initialCostModel(),
-        currentQueryContext: new QueryContext(localContract.initialState(createConstructorContext({}, '0'.repeat(64))).currentContractState.data, sampleContractAddress())
-    };
-    return localContract.circuits.compute_hash(circuitContext, game_id, player_id, x, y, health, n, s).result;
-};
-
-const generateGrid = () => {
+const generateGrid = async () => {
   const grid = document.getElementById('game-grid')!;
   grid.innerHTML = '';
+  
+  let currentX = -1;
+  let currentY = -1;
+  if (providers) {
+      const state = await providers.privateStateProvider.get('shadowgrid-state');
+      if (state) {
+          currentX = Number(state.x);
+          currentY = Number(state.y);
+      }
+  }
+
   for (let y = 0; y < 10; y++) {
     for (let x = 0; x < 10; x++) {
       const cell = document.createElement('div');
@@ -113,7 +131,7 @@ const generateGrid = () => {
 
 const handleMove = async (newX: number, newY: number) => {
   if (!deployedContract) {
-    log('Join the game first!');
+    log('Join or host a game first!');
     return;
   }
   log(\Attempting to move to (\, \)...\);
@@ -121,79 +139,151 @@ const handleMove = async (newX: number, newY: number) => {
   try {
     const newSalt = new Uint8Array(32);
     crypto.getRandomValues(newSalt);
-    const playerId = new Uint8Array(32); // Using 0s as dummy player ID for MVP
     
-    // We need the OLD commitment
-    const C_old = computeHash(gameId, playerId, BigInt(currentX), BigInt(currentY), 100n, nonce, currentSalt);
-
     log('Generating ZK proof for move...');
-    // verify_move: C_old, game_id, player_id, x_old, y_old, health_old, nonce_old, salt_old, x_new, y_new, health_new, nonce_new, salt_new
+    // verify_move: x_new, y_new, new_salt
     const tx = await deployedContract.callTx.verify_move(
-      C_old,
-      gameId,
-      playerId,
-      BigInt(currentX),
-      BigInt(currentY),
-      100n,
-      nonce,
-      currentSalt, // Old salt
       BigInt(newX),
       BigInt(newY),
-      100n,
-      nonce + 1n,
-      newSalt  // New salt
+      newSalt
     );
-    
     log('Transaction accepted! TxId: ' + tx.txId);
     
-    currentX = newX;
-    currentY = newY;
-    nonce += 1n;
-    currentSalt = newSalt;
+    // Update private state
+    const p = await getProviders();
+    const oldState = await p.privateStateProvider.get('shadowgrid-state');
+    const newState = {
+        ...oldState,
+        x: BigInt(newX),
+        y: BigInt(newY),
+        nonce: oldState.nonce + 1n,
+        salt: newSalt
+    };
+    await p.privateStateProvider.set('shadowgrid-state', newState);
+    
     generateGrid();
   } catch (e: any) {
     log('Move failed: ' + e.message);
   }
 };
 
-document.getElementById('join-btn')?.addEventListener('click', async () => {
+document.getElementById('host-btn')?.addEventListener('click', async () => {
   if (!connectedAPI) return;
   log('Deploying contract and registering initial state...');
   
   try {
     const p = await getProviders();
+    const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
+    const salt = new Uint8Array(32);
+    crypto.getRandomValues(salt);
     
-    const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ShadowgridContractClass)
-      .pipe(CompiledContract.withWitnesses({}));
-      
+    const initialState: PrivateState = {
+      game_id: gameId,
+      player_id: playerId,
+      x: 2n,
+      y: 2n,
+      health: 100n,
+      nonce: 1n,
+      salt: salt
+    };
+    
     log('Deploying new ShadowGrid contract...');
     deployedContract = await deployContract(p, {
       compiledContract: CompiledShadowgridContract,
       privateStateId: 'shadowgrid-state',
-      initialPrivateState: {}
+      initialPrivateState: initialState
     });
     
-    log('Contract deployed at: ' + deployedContract.deployTxData.public.contractAddress);
-    
-    const playerId = new Uint8Array(32); // dummy
-    crypto.getRandomValues(currentSalt);
+    const addr = deployedContract.deployTxData.public.contractAddress;
+    log('Contract deployed at: ' + addr);
+    document.getElementById('contract-addr')!.innerText = addr;
     
     log('Registering player...');
     const tx = await deployedContract.callTx.register(
       gameId,
       playerId,
-      BigInt(currentX),
-      BigInt(currentY),
+      2n,
+      2n,
       100n, // health
-      nonce,
-      currentSalt
+      salt
     );
-    
     log('Registered! TxId: ' + tx.txId);
     
+    generateGrid();
   } catch(e: any) {
     log('Error: ' + e.message);
   }
 });
 
-generateGrid();
+document.getElementById('join-btn')?.addEventListener('click', async () => {
+  if (!connectedAPI) return;
+  
+  const addr = (document.getElementById('contract-input') as HTMLInputElement).value;
+  if (!addr) {
+      log('Please enter a contract address to join');
+      return;
+  }
+  
+  try {
+    const p = await getProviders();
+    const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
+    const salt = new Uint8Array(32);
+    crypto.getRandomValues(salt);
+    
+    const initialState: PrivateState = {
+      game_id: gameId,
+      player_id: playerId,
+      x: 8n, // Spawn at different location
+      y: 8n,
+      health: 100n,
+      nonce: 1n,
+      salt: salt
+    };
+    
+    // Attempt to read existing private state first to survive reload
+    let existingState;
+    try {
+        existingState = await p.privateStateProvider.get('shadowgrid-state');
+    } catch(e) {}
+    
+    const finalInitialState = existingState || initialState;
+    
+    log('Connecting to ShadowGrid contract...');
+    deployedContract = await findDeployedContract(p, {
+      contractAddress: addr,
+      compiledContract: CompiledShadowgridContract,
+      privateStateId: 'shadowgrid-state',
+      initialPrivateState: finalInitialState
+    });
+    
+    document.getElementById('contract-addr')!.innerText = addr;
+    
+    if (!existingState) {
+        log('Registering player...');
+        const tx = await deployedContract.callTx.register(
+          gameId,
+          playerId,
+          8n,
+          8n,
+          100n, // health
+          salt
+        );
+        log('Registered! TxId: ' + tx.txId);
+    } else {
+        log('Recovered existing state from local storage. Ready to play!');
+    }
+    
+    generateGrid();
+  } catch(e: any) {
+    log('Error: ' + e.message);
+  }
+});
+
+// We can't generate the active grid until providers are loaded, so just show empty initially.
+const grid = document.getElementById('game-grid')!;
+grid.innerHTML = '';
+for (let i = 0; i < 100; i++) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  grid.appendChild(cell);
+}
