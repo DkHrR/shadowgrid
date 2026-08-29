@@ -2,12 +2,38 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
-export ledger hashes: Map<Bytes<32>, Bytes<32>>;
+export struct PlayerPrivateState {
+  game_id: Uint<64>,
+  player_id: Bytes<32>,
+  x: Uint<32>,
+  y: Uint<32>,
+  health: Uint<32>,
+  nonce: Uint<64>,
+  salt: Bytes<32>
+}
 
-export circuit test_hash(
-  key: Bytes<32>,
-  input: Bytes<32>
+export ledger commitments: Map<Bytes<32>, Bytes<32>>;
+
+export circuit test_state_commitment(
+  game_id: Uint<64>,
+  player_id: Bytes<32>,
+  x: Uint<32>,
+  y: Uint<32>,
+  health: Uint<32>,
+  nonce: Uint<64>,
+  salt: Bytes<32>
 ): [] {
-  const hash_val = persistentHash<Bytes<32>>(input);
-  hashes.insert(disclose(key), disclose(hash_val));
+  const state = PlayerPrivateState {
+    game_id: game_id,
+    player_id: player_id,
+    x: x,
+    y: y,
+    health: health,
+    nonce: nonce,
+    salt: salt
+  };
+
+  const c = persistentHash<PlayerPrivateState>(state);
+
+  commitments.insert(disclose(player_id), disclose(c));
 }
