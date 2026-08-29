@@ -2,7 +2,15 @@
 [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/runner/work/shadowgrid/shadowgrid[39m
 
 Sourcemap for "/home/runner/work/shadowgrid/shadowgrid/dist/contract/index.js" points to missing source files
-{"level":30,"time":1788022904301,"pid":2899,"hostname":"runnervmgx7h7","msg":"Starting test environment... path=/home/runner/work/shadowgrid/shadowgrid, file=compose.yml, uid=3361848793703062"}
+{"level":30,"time":1788023692561,"pid":3001,"hostname":"runnervmgx7h7","msg":"Starting test environment... path=/home/runner/work/shadowgrid/shadowgrid, file=compose.yml, uid=4470371438547016"}
+[90mstdout[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
+[22m[39mCopied register.bzkir (size: 259 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/zkir/shadowgrid#register.bzkir
+Copied verify_move.bzkir (size: 493 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/zkir/shadowgrid#verify_move.bzkir
+Copied register.prover (size: 2820790 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/keys/shadowgrid#register.prover
+Copied register.verifier (size: 2119 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/keys/shadowgrid#register.verifier
+Copied verify_move.prover (size: 5211015 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/keys/shadowgrid#verify_move.prover
+Copied verify_move.verifier (size: 2119 bytes) to /home/runner/work/shadowgrid/shadowgrid/dist/keys/shadowgrid#verify_move.verifier
+
 [90mstdout[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
 [22m[39m[DelayedWaitStrategy] Starting 20000ms delay before health check...
 
@@ -12,56 +20,56 @@ Sourcemap for "/home/runner/work/shadowgrid/shadowgrid/dist/contract/index.js" p
 [90mstdout[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
 [22m[39m[DelayedWaitStrategy] Health check passed
 
-{"level":30,"time":1788022948967,"pid":2899,"hostname":"runnervmgx7h7","msg":"Test environment configuration: {\"walletNetworkId\":\"undeployed\",\"networkId\":\"undeployed\",\"indexer\":\"http://127.0.0.1:8088/api/v4/graphql\",\"indexerWS\":\"ws://127.0.0.1:8088/api/v4/graphql/ws\",\"node\":\"http://127.0.0.1:9944\",\"nodeWS\":\"ws://127.0.0.1:9944\",\"proofServer\":\"http://127.0.0.1:6300\"}"}
-[17:02:28.968] [32mINFO[39m (2899): [36mInitializing wallet builder for undeployed[39m
-[17:02:29.052] [32mINFO[39m (2899): [36mUsing test wallet with known mnemonic[39m
-[17:02:29.089] [32mINFO[39m (2899): [36mCreating dust wallet with params: {"indexerClientConnection":{"indexerHttpUrl":"http://127.0.0.1:8088/api/v4/graphql","indexerWsUrl":"ws://127.0.0.1:8088/api/v4/graphql/ws"},"provingServerUrl":"http://127.0.0.1:6300/","networkId":"undeployed","relayURL":"ws://127.0.0.1:9944/","txHistoryStorage":{"storage":{}},"costParameters":{"ledgerParams":{"__wbg_ptr":4654560},"additionalFeeOverhead":"500000000000000000","feeBlocksMargin":5}}[39m
-[17:02:29.141] [32mINFO[39m (2899): [36mYour wallet address is: mn_addr_undeployed1nqhdatus5d6tvye57q854kdrs6ur2ytsl8yaygzfsdy2e3tvtmesdcgp8m, waiting for NIGHT funds...[39m
-[17:02:29.141] [32mINFO[39m (2899): [36mSyncing wallet...[39m
-[17:02:29.155] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.156] [32mINFO[39m (2899): [36mWallet synced state emission (synced=false): { shielded=false, unshielded=false, dust=false }[39m
-{"level":30,"time":1788022949114,"pid":2899,"hostname":"runnervmgx7h7","msg":"Your wallet seed is: a51c86de32d0791f7cffc3bdff1abd9bb54987f0ed5effc30c936dddbb9afd9d530c8db445e4f2d3ea42a321b260e022aadf05987c9a67ec7b6b6ca1d0593ec9 and your address is: mock-address"}
-{"level":30,"time":1788022949114,"pid":2899,"hostname":"runnervmgx7h7","msg":"Starting wallet..."}
-[17:02:29.380] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.380] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.381] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.381] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.381] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
-[17:02:29.382] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.387] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.414] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.498] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.563] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+{"level":30,"time":1788023734899,"pid":3001,"hostname":"runnervmgx7h7","msg":"Test environment configuration: {\"walletNetworkId\":\"undeployed\",\"networkId\":\"undeployed\",\"indexer\":\"http://127.0.0.1:8088/api/v4/graphql\",\"indexerWS\":\"ws://127.0.0.1:8088/api/v4/graphql/ws\",\"node\":\"http://127.0.0.1:9944\",\"nodeWS\":\"ws://127.0.0.1:9944\",\"proofServer\":\"http://127.0.0.1:6300\"}"}
+[17:15:34.899] [32mINFO[39m (3001): [36mInitializing wallet builder for undeployed[39m
+[17:15:34.983] [32mINFO[39m (3001): [36mUsing test wallet with known mnemonic[39m
+[17:15:35.019] [32mINFO[39m (3001): [36mCreating dust wallet with params: {"indexerClientConnection":{"indexerHttpUrl":"http://127.0.0.1:8088/api/v4/graphql","indexerWsUrl":"ws://127.0.0.1:8088/api/v4/graphql/ws"},"provingServerUrl":"http://127.0.0.1:6300/","networkId":"undeployed","relayURL":"ws://127.0.0.1:9944/","txHistoryStorage":{"storage":{}},"costParameters":{"ledgerParams":{"__wbg_ptr":4654560},"additionalFeeOverhead":"500000000000000000","feeBlocksMargin":5}}[39m
+[17:15:35.067] [32mINFO[39m (3001): [36mYour wallet address is: mn_addr_undeployed1nqhdatus5d6tvye57q854kdrs6ur2ytsl8yaygzfsdy2e3tvtmesdcgp8m, waiting for NIGHT funds...[39m
+[17:15:35.068] [32mINFO[39m (3001): [36mSyncing wallet...[39m
+[17:15:35.083] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.084] [32mINFO[39m (3001): [36mWallet synced state emission (synced=false): { shielded=false, unshielded=false, dust=false }[39m
+{"level":30,"time":1788023735043,"pid":3001,"hostname":"runnervmgx7h7","msg":"Your wallet seed is: a51c86de32d0791f7cffc3bdff1abd9bb54987f0ed5effc30c936dddbb9afd9d530c8db445e4f2d3ea42a321b260e022aadf05987c9a67ec7b6b6ca1d0593ec9 and your address is: mock-address"}
+{"level":30,"time":1788023735043,"pid":3001,"hostname":"runnervmgx7h7","msg":"Starting wallet..."}
+[17:15:35.172] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.189] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.190] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.190] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.190] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.190] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=false, dust=false }[39m
+[17:15:35.191] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.284] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.308] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.386] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.458] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.633] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.694] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.760] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
+[17:15:35.808] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
 [90mstderr[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
-[22m[39m2026-08-29 17:02:29        RPC-CORE: subscribeRuntimeVersion(): RuntimeVersion:: disconnected from ws://127.0.0.1:9944/: 1000:: Normal Closure
+[22m[39m2026-08-29 17:15:35        RPC-CORE: subscribeRuntimeVersion(): RuntimeVersion:: disconnected from ws://127.0.0.1:9944/: 1000:: Normal Closure
 
 [90mstderr[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
-[22m[39m2026-08-29 17:02:29        RPC-CORE: subscribeRuntimeVersion(): RuntimeVersion:: disconnected from ws://127.0.0.1:9944/: 1000:: Normal Closure
+[22m[39m2026-08-29 17:15:35        RPC-CORE: subscribeRuntimeVersion(): RuntimeVersion:: disconnected from ws://127.0.0.1:9944/: 1000:: Normal Closure
 
-[17:02:29.642] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.713] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.780] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=false, unshielded=true, dust=false }[39m
-[17:02:29.830] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:29.890] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:29.953] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:30.013] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:30.073] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:30.140] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:30.197] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
-[17:02:30.256] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=true }[39m
-[17:02:59.200] [32mINFO[39m (2899): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=true }[39m
-[17:02:59.200] [32mINFO[39m (2899): [36mWallet synced state emission (synced=true): { shielded=true, unshielded=true, dust=true }[39m
-[17:02:59.200] [32mINFO[39m (2899): [36mSync complete[39m
-[17:02:59.202] [32mINFO[39m (2899): [36mWallet balances after sync - Shielded: {"0000000000000000000000000000000000000000000000000000000000000000":"250000000000000","0000000000000000000000000000000000000000000000000000000000000002":"50000000000000","0000000000000000000000000000000000000000000000000000000000000001":"50000000000000"}, Unshielded: {"0000000000000000000000000000000000000000000000000000000000000000":"250000000000000"}, Dust: "1250000000000000000000000"[39m
-[17:02:59.204] [32mINFO[39m (2899): [36mYour wallet NIGHT balance is: 250000000000000[39m
-{"level":30,"time":1788022979212,"pid":2899,"hostname":"runnervmgx7h7","msg":"Deploying contract..."}
-{"level":30,"time":1788023000647,"pid":2899,"hostname":"runnervmgx7h7","msg":"Contract deployed successfully at 6f94cce18260e35f19e5be0ced6136f43e763e56680ac51fef094b52cceadb20"}
-{"level":30,"time":1788023000648,"pid":2899,"hostname":"runnervmgx7h7","msg":"Registering initial state..."}
+[17:15:35.866] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
+[17:15:35.924] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
+[17:15:35.983] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
+[17:15:36.050] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
+[17:15:36.105] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=false }[39m
+[17:15:36.164] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=true }[39m
+[17:16:05.150] [32mINFO[39m (3001): [36mWallet synced state emission: { shielded=true, unshielded=true, dust=true }[39m
+[17:16:05.151] [32mINFO[39m (3001): [36mWallet synced state emission (synced=true): { shielded=true, unshielded=true, dust=true }[39m
+[17:16:05.151] [32mINFO[39m (3001): [36mSync complete[39m
+[17:16:05.152] [32mINFO[39m (3001): [36mWallet balances after sync - Shielded: {"0000000000000000000000000000000000000000000000000000000000000000":"250000000000000","0000000000000000000000000000000000000000000000000000000000000002":"50000000000000","0000000000000000000000000000000000000000000000000000000000000001":"50000000000000"}, Unshielded: {"0000000000000000000000000000000000000000000000000000000000000000":"250000000000000"}, Dust: "1250000000000000000000000"[39m
+[17:16:05.154] [32mINFO[39m (3001): [36mYour wallet NIGHT balance is: 250000000000000[39m
+{"level":30,"time":1788023765162,"pid":3001,"hostname":"runnervmgx7h7","msg":"Deploying contract..."}
+{"level":30,"time":1788023786543,"pid":3001,"hostname":"runnervmgx7h7","msg":"Contract deployed successfully at 753edbc0a26a11cb0061b248a61d4f10c0c5fc5f20a09de37b2555dcd587eb68"}
+{"level":30,"time":1788023786543,"pid":3001,"hostname":"runnervmgx7h7","msg":"Registering initial state..."}
 [90mstderr[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
 [22m[39mREGISTER FAILED: Error: Unexpected error submitting scoped transaction '<unnamed>': Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"
     at scoped [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/midnight-js-contracts[24m/dist/index.mjs:1249:27[90m)[39m
 [90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
-    at [90m/home/runner/work/shadowgrid/shadowgrid/[39mrun-test.spec.ts:120:13
+    at [90m/home/runner/work/shadowgrid/shadowgrid/[39mrun-test.spec.ts:126:13
     at [90mfile:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:1903:20 {
   [cause]: Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"
       at __wbg_Error_e17e777aac105295 [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/ledger-v8[24m/midnight_ledger_wasm_bg.js:9728:17[90m)[39m
@@ -75,94 +83,106 @@ Sourcemap for "/home/runner/work/shadowgrid/shadowgrid/dist/contract/index.js" p
       at real [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/ledger-v8[24m/midnight_ledger_wasm_bg.js:219:20[90m)[39m
   [90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
 }
+Error message: Unexpected error submitting scoped transaction '<unnamed>': Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"
+Error cause: Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"
+    at __wbg_Error_e17e777aac105295 [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/ledger-v8[24m/midnight_ledger_wasm_bg.js:9728:17[90m)[39m
+    at null.<anonymous> (wasm://wasm/026b209a:1:6342132)
+    at null.<anonymous> (wasm://wasm/026b209a:1:4455484)
+    at null.<anonymous> (wasm://wasm/026b209a:1:541594)
+    at null.<anonymous> (wasm://wasm/026b209a:1:3258719)
+    at null.<anonymous> (wasm://wasm/026b209a:1:6276270)
+    at null.<anonymous> (wasm://wasm/026b209a:1:6393810)
+    at __wbg_adapter_16 [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/ledger-v8[24m/midnight_ledger_wasm_bg.js:1419:10[90m)[39m
+    at real [90m(file:///home/runner/work/shadowgrid/shadowgrid/[39mnode_modules/[4m@midnight-ntwrk/ledger-v8[24m/midnight_ledger_wasm_bg.js:219:20[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
 
 [90mstdout[2m | run-test.spec.ts[2m > [22m[2mE2E Runtime verification
 [22m[39m
 
 --- PROOF SERVER LOGS ---
-[2m2026-08-29T17:01:57.786163Z[0m [32m INFO[0m [2mmidnight_proof_server[0m[2m:[0m Ensuring zswap key material is available...
-[2m2026-08-29T17:01:57.787184Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=10. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.793722Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=11. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.799872Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=12. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.804807Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=13. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.809554Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=14. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.814254Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=15. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.819045Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.823800Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.828438Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:57.833271Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.423772Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=10 - finished.
-[2m2026-08-29T17:01:58.423795Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=10 - verified correct.
-[2m2026-08-29T17:01:58.500386Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=11 - finished.
-[2m2026-08-29T17:01:58.500914Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=11 - verified correct.
-[2m2026-08-29T17:01:58.547885Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=12 - finished.
-[2m2026-08-29T17:01:58.548116Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=12 - verified correct.
-[2m2026-08-29T17:01:58.609989Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=13 - finished.
-[2m2026-08-29T17:01:58.610600Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=13 - verified correct.
-[2m2026-08-29T17:01:58.636009Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap signing operations - finished.
-[2m2026-08-29T17:01:58.636124Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap signing operations - verified correct.
-[2m2026-08-29T17:01:58.641589Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.655819Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Dust spends - finished.
-[2m2026-08-29T17:01:58.655881Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Dust spends - verified correct.
-[2m2026-08-29T17:01:58.661804Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.703242Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=14 - finished.
-[2m2026-08-29T17:01:58.703363Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=14 - verified correct.
-[2m2026-08-29T17:01:58.750962Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=15 - finished.
-[2m2026-08-29T17:01:58.750987Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=15 - verified correct.
-[2m2026-08-29T17:01:58.770074Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap outputs - finished.
-[2m2026-08-29T17:01:58.770156Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap outputs - verified correct.
-[2m2026-08-29T17:01:58.782884Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.874263Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap inputs - finished.
-[2m2026-08-29T17:01:58.874290Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap inputs - verified correct.
-[2m2026-08-29T17:01:58.891048Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.921380Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Dust spends - finished.
-[2m2026-08-29T17:01:58.921406Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Dust spends - verified correct.
-[2m2026-08-29T17:01:58.922353Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:58.933923Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap signing operations - finished.
-[2m2026-08-29T17:01:58.933939Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap signing operations - verified correct.
-[2m2026-08-29T17:01:58.935431Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:59.058087Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap outputs - finished.
-[2m2026-08-29T17:01:59.058113Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap outputs - verified correct.
-[2m2026-08-29T17:01:59.059163Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:59.154212Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap inputs - finished.
-[2m2026-08-29T17:01:59.154315Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap inputs - verified correct.
-[2m2026-08-29T17:01:59.156361Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
-[2m2026-08-29T17:01:59.196162Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Dust spends - finished.
-[2m2026-08-29T17:01:59.196183Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Dust spends - verified correct.
-[2m2026-08-29T17:01:59.199666Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap signing operations - finished.
-[2m2026-08-29T17:01:59.199684Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap signing operations - verified correct.
-[2m2026-08-29T17:01:59.245867Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap outputs - finished.
-[2m2026-08-29T17:01:59.245984Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap outputs - verified correct.
-[2m2026-08-29T17:01:59.419106Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap inputs - finished.
-[2m2026-08-29T17:01:59.419128Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap inputs - verified correct.
-[2m2026-08-29T17:01:59.420721Z[0m [32m INFO[0m [2mactix_server::builder[0m[2m:[0m starting 4 workers
-[2m2026-08-29T17:01:59.420737Z[0m [32m INFO[0m [2mactix_server::server[0m[2m:[0m Actix runtime found; starting in Actix runtime
-[2m2026-08-29T17:01:59.420741Z[0m [32m INFO[0m [2mactix_server::server[0m[2m:[0m starting service: "actix-web-service-0.0.0.0:6300", workers: 4, listening on: 0.0.0.0:6300
-[2m2026-08-29T17:02:59.366812Z[0m [32m INFO[0m [2mmidnight_proof_server::endpoints[0m[2m:[0m Starting to process request for /prove...
-[2m2026-08-29T17:03:00.720441Z[0m [32m INFO[0m [2mactix_web::middleware::logger[0m[2m:[0m 172.18.0.1 POST /prove HTTP/1.1; took 1.353668s
-[2m2026-08-29T17:03:20.812824Z[0m [32m INFO[0m [2mmidnight_proof_server::endpoints[0m[2m:[0m Starting to process request for /check...
-[2m2026-08-29T17:03:20.813135Z[0m [32m INFO[0m [2mactix_web::middleware::logger[0m[2m:[0m 172.18.0.1 POST /check HTTP/1.1; took 0.000356s
+[2m2026-08-29T17:15:08.726203Z[0m [32m INFO[0m [2mmidnight_proof_server[0m[2m:[0m Ensuring zswap key material is available...
+[2m2026-08-29T17:15:08.727349Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=10. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.732607Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=11. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.737968Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=12. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.742615Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=13. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.747140Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=14. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.751746Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing public parameters for k=15. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.756449Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.761007Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.765576Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:08.770295Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge proving key for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:09.681328Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=10 - finished.
+[2m2026-08-29T17:15:09.681347Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=10 - verified correct.
+[2m2026-08-29T17:15:09.805829Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=11 - finished.
+[2m2026-08-29T17:15:09.805850Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=11 - verified correct.
+[2m2026-08-29T17:15:09.904005Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=12 - finished.
+[2m2026-08-29T17:15:09.904025Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=12 - verified correct.
+[2m2026-08-29T17:15:10.057850Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Dust spends - finished.
+[2m2026-08-29T17:15:10.057876Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Dust spends - verified correct.
+[2m2026-08-29T17:15:10.063832Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.076635Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=13 - finished.
+[2m2026-08-29T17:15:10.076696Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=13 - verified correct.
+[2m2026-08-29T17:15:10.096993Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap signing operations - finished.
+[2m2026-08-29T17:15:10.097013Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap signing operations - verified correct.
+[2m2026-08-29T17:15:10.108282Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.156168Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=14 - finished.
+[2m2026-08-29T17:15:10.156189Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=14 - verified correct.
+[2m2026-08-29T17:15:10.230034Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap outputs - finished.
+[2m2026-08-29T17:15:10.230054Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap outputs - verified correct.
+[2m2026-08-29T17:15:10.236980Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.280136Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=15 - finished.
+[2m2026-08-29T17:15:10.280152Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching public parameters for k=15 - verified correct.
+[2m2026-08-29T17:15:10.497512Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap inputs - finished.
+[2m2026-08-29T17:15:10.497540Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge proving key for Zswap inputs - verified correct.
+[2m2026-08-29T17:15:10.516819Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing zero-knowledge verifying key for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.540401Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Dust spends - finished.
+[2m2026-08-29T17:15:10.540415Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Dust spends - verified correct.
+[2m2026-08-29T17:15:10.542930Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Dust spends. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.560506Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap signing operations - finished.
+[2m2026-08-29T17:15:10.563268Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap signing operations - verified correct.
+[2m2026-08-29T17:15:10.564156Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap signing operations. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.678228Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap outputs - finished.
+[2m2026-08-29T17:15:10.678333Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap outputs - verified correct.
+[2m2026-08-29T17:15:10.681989Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap outputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.757260Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap signing operations - finished.
+[2m2026-08-29T17:15:10.757325Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap signing operations - verified correct.
+[2m2026-08-29T17:15:10.876197Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap outputs - finished.
+[2m2026-08-29T17:15:10.876301Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap outputs - verified correct.
+[2m2026-08-29T17:15:10.975746Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap inputs - finished.
+[2m2026-08-29T17:15:10.975775Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching zero-knowledge verifying key for Zswap inputs - verified correct.
+[2m2026-08-29T17:15:10.976778Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Missing ZKIR source for Zswap inputs. Attempting to download from the host https://srs.midnight.network/ - this is not a trusted service, the data will be verified.
+[2m2026-08-29T17:15:10.997381Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Dust spends - finished.
+[2m2026-08-29T17:15:10.997448Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Dust spends - verified correct.
+[2m2026-08-29T17:15:11.428757Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap inputs - finished.
+[2m2026-08-29T17:15:11.428785Z[0m [32m INFO[0m [2mmidnight_base_crypto::data_provider[0m[2m:[0m Fetching ZKIR source for Zswap inputs - verified correct.
+[2m2026-08-29T17:15:11.432875Z[0m [32m INFO[0m [2mactix_server::builder[0m[2m:[0m starting 4 workers
+[2m2026-08-29T17:15:11.432944Z[0m [32m INFO[0m [2mactix_server::server[0m[2m:[0m Actix runtime found; starting in Actix runtime
+[2m2026-08-29T17:15:11.432975Z[0m [32m INFO[0m [2mactix_server::server[0m[2m:[0m starting service: "actix-web-service-0.0.0.0:6300", workers: 4, listening on: 0.0.0.0:6300
+[2m2026-08-29T17:16:05.317838Z[0m [32m INFO[0m [2mmidnight_proof_server::endpoints[0m[2m:[0m Starting to process request for /prove...
+[2m2026-08-29T17:16:06.672624Z[0m [32m INFO[0m [2mactix_web::middleware::logger[0m[2m:[0m 172.18.0.1 POST /prove HTTP/1.1; took 1.354848s
+[2m2026-08-29T17:16:26.704403Z[0m [32m INFO[0m [2mmidnight_proof_server::endpoints[0m[2m:[0m Starting to process request for /check...
+[2m2026-08-29T17:16:26.704735Z[0m [32m INFO[0m [2mactix_web::middleware::logger[0m[2m:[0m 172.18.0.1 POST /check HTTP/1.1; took 0.000366s
 
 -------------------------
 
 
 
-{"level":30,"time":1788023000884,"pid":2899,"hostname":"runnervmgx7h7","msg":"Shutting down test environment..."}
- [31m❯[39m run-test.spec.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 97790[2mms[22m[39m
-[31m   [31m×[31m E2E Runtime verification[39m[33m 97789[2mms[22m[39m
+{"level":30,"time":1788023786772,"pid":3001,"hostname":"runnervmgx7h7","msg":"Shutting down test environment..."}
+ [31m❯[39m run-test.spec.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 95352[2mms[22m[39m
+[31m   [31m×[31m E2E Runtime verification[39m[33m 95351[2mms[22m[39m
 
 [31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
 
 [41m[1m FAIL [22m[49m run-test.spec.ts[2m > [22mE2E Runtime verification
 [31m[1mError[22m: Unexpected error submitting scoped transaction '<unnamed>': Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"[39m
 [90m [2m❯[22m scoped node_modules/@midnight-ntwrk/midnight-js-contracts/src/internal/transaction.ts:[2m266:22[22m[39m
-[36m [2m❯[22m run-test.spec.ts:[2m120:13[22m[39m
-    [90m118|[39m         [35mtry[39m {
-    [90m119|[39m             logger[33m.[39m[34minfo[39m([32m'Registering initial state...'[39m)[33m;[39m
-    [90m120|[39m             await deployedContract.callTx.register(game_id, player_id,…
+[36m [2m❯[22m run-test.spec.ts:[2m126:13[22m[39m
+    [90m124|[39m         [35mtry[39m {
+    [90m125|[39m             logger[33m.[39m[34minfo[39m([32m'Registering initial state...'[39m)[33m;[39m
+    [90m126|[39m             [35mawait[39m deployedContract[33m.[39mcallTx[33m.[39m[34mregister[39m()[33m;[39m
     [90m   |[39m             [31m^[39m
-    [90m121|[39m         } [35mcatch[39m (e) {
-    [90m122|[39m             console[33m.[39m[34merror[39m([32m"REGISTER FAILED:"[39m[33m,[39m e)[33m;[39m
+    [90m127|[39m         } [35mcatch[39m (e[33m:[39m any) {
+    [90m128|[39m             console[33m.[39m[34merror[39m([32m"REGISTER FAILED:"[39m[33m,[39m e)[33m;[39m
 
 [31m[1mCaused by: Error[22m: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"[39m
 [90m [2m❯[22m __wbg_Error_e17e777aac105295 node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:[2m9728:17[22m[39m
@@ -180,8 +200,8 @@ Sourcemap for "/home/runner/work/shadowgrid/shadowgrid/dist/contract/index.js" p
 
 [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
 [2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
-[2m   Start at [22m 17:01:41
-[2m   Duration [22m 100.47s[2m (transform 97ms, setup 0ms, import 2.55s, tests 97.79s, environment 0ms)[22m
+[2m   Start at [22m 17:14:49
+[2m   Duration [22m 98.09s[2m (transform 129ms, setup 0ms, import 2.60s, tests 95.35s, environment 0ms)[22m
 
 
-::error file=/home/runner/work/shadowgrid/shadowgrid/run-test.spec.ts,title=run-test.spec.ts > E2E Runtime verification,line=120,column=13::Error: Unexpected error submitting scoped transaction '<unnamed>': Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"%0A ❯ scoped node_modules/@midnight-ntwrk/midnight-js-contracts/src/internal/transaction.ts:266:22%0A ❯ run-test.spec.ts:120:13%0A%0ACaused by: Caused by: Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"%0A ❯ __wbg_Error_e17e777aac105295 node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:9728:17%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6342132%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:4455484%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:541594%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:3258719%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6276270%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6393810%0A ❯ __wbg_adapter_16 node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:1419:10%0A ❯ real node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:219:20%0A%0A
+::error file=/home/runner/work/shadowgrid/shadowgrid/run-test.spec.ts,title=run-test.spec.ts > E2E Runtime verification,line=126,column=13::Error: Unexpected error submitting scoped transaction '<unnamed>': Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"%0A ❯ scoped node_modules/@midnight-ntwrk/midnight-js-contracts/src/internal/transaction.ts:266:22%0A ❯ run-test.spec.ts:126:13%0A%0ACaused by: Caused by: Error: 'check' returned an error: Error: Failed Proof Server response: url="http://127.0.0.1:6300/check", code="400", status="Bad Request"%0A ❯ __wbg_Error_e17e777aac105295 node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:9728:17%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6342132%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:4455484%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:541594%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:3258719%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6276270%0A ❯ null.<anonymous> wasm:/wasm/026b209a:1:6393810%0A ❯ __wbg_adapter_16 node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:1419:10%0A ❯ real node_modules/@midnight-ntwrk/ledger-v8/midnight_ledger_wasm_bg.js:219:20%0A%0A
