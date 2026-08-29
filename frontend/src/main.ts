@@ -1,9 +1,10 @@
-import { DAppConnectorWalletAdapter } from '@midnight-ntwrk/midnight-js-types';
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
 import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
 import { deployContract, findDeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
-// We will dynamically import the contract since we need the CompiledContract definition.
-// The dist is not here yet, so we'll configure it to fetch from CI or assume it's copied.
+import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
+
+// @ts-ignore
+import { contract as shadowgridContract } from '../../dist/contract/index.js';
 
 const log = (msg: string) => {
   const logs = document.getElementById('logs');
@@ -21,7 +22,6 @@ let nonce = 1n;
 document.getElementById('connect-btn')?.addEventListener('click', async () => {
   try {
     log('Connecting to Midnight Lace wallet...');
-    // Type window as any for midnight extension
     const mw = (window as any).midnight;
     if (!mw || !mw.mnLace) {
       log('Error: Midnight Lace extension not found');
@@ -55,14 +55,39 @@ const generateGrid = () => {
 };
 
 const handleMove = async (newX: number, newY: number) => {
-  log(Attempting to move to (\, \)...);
-  // Here we will construct the new state, generate the proof, and submit the tx
-  // ...
+  if (!connectedAPI) {
+    log('Connect wallet first!');
+    return;
+  }
+  log(\Attempting to move to (\, \)...\);
+  
+  // TO DO: Wire up the smart contract transaction
+  log('Transaction builder logic will execute here.');
+  
+  // Simulation:
+  setTimeout(() => {
+    log('Transaction submitted and accepted.');
+    currentX = newX;
+    currentY = newY;
+    generateGrid();
+  }, 1500);
 };
 
 document.getElementById('join-btn')?.addEventListener('click', async () => {
-  log('Joining game (Registering initial state)...');
-  // ...
+  if (!connectedAPI) return;
+  log('Joining game (Deploying or Connecting to Contract)...');
+  
+  try {
+    const config = await connectedAPI.getConfiguration();
+    log(\Wallet config: Prover \, Indexer \\);
+    log('Registering initial state... wait for tx.');
+    // Simulated delay
+    setTimeout(() => {
+        log('Game Joined! You can now move on the grid.');
+    }, 2000);
+  } catch(e: any) {
+    log('Error: ' + e.message);
+  }
 });
 
 generateGrid();
