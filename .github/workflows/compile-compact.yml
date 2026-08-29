@@ -1,0 +1,44 @@
+name: Compile Compact Contract
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.compact'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24' # Matching your local version
+          
+      # Using npm install because we don't have a package-lock.json committed yet, 
+      # but normally this should be npm ci.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fetch compactc v0.23
+        run: npx fetch-compactc
+        env:
+          COMPACTC_VERSION: "0.23"
+
+      - name: Compile shadowgrid.compact
+        run: npx run-compactc shadowgrid.compact dist
+        env:
+          COMPACTC_VERSION: "0.23"
+
+      - name: Upload Compilation Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-artifacts
+          path: dist/
