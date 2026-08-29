@@ -64,11 +64,11 @@ test('E2E Runtime verification', async () => {
             privateStoragePasswordProvider: async () => 'shadowgrid-production-password-998877',
             accountId: GENESIS_MINT_WALLET_SEED
         }),
-        publicDataProvider: indexerPublicDataProvider(envConfig.indexerUri, envConfig.indexerWsUri),
-        zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath)),
-        proofProvider: httpClientProofProvider(envConfig.proofServerUri),
-        walletProvider: new MidnightWalletProvider(envConfig.nodeUri),
-        midnightProvider: new MidnightWalletProvider(envConfig.nodeUri)
+        publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
+        zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath, 'contract')),
+        proofProvider: httpClientProofProvider(envConfig.proofServer),
+        walletProvider: new MidnightWalletProvider(envConfig.node),
+        midnightProvider: new MidnightWalletProvider(envConfig.node)
     };
 
     try {
