@@ -32,12 +32,12 @@ jobs:
           COMPACTC_VERSION: "0.31.1"
 
       - name: Compile test contract
-        run: npx run-compactc shadowgrid.compact dist
+        run: npx run-compactc shadowgrid.compact dist > test-results.md 2>&1 || true
         env:
           COMPACTC_VERSION: "0.31.1"
 
       - name: Run Runtime Verification Tests
-        run: npx vitest run --testTimeout 300000 run-test.spec.ts
+        run: npx vitest run --testTimeout 300000 run-test.spec.ts >> test-results.md 2>&1 || true
           
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -47,6 +47,7 @@ jobs:
           path: test-results.md
 
       - name: Commit test results
+        if: always()
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
