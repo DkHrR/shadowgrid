@@ -43,7 +43,7 @@ test('E2E Runtime verification', async () => {
         CompiledContract.withWitnesses({
             localState: () => witnessState
         }), 
-        CompiledContract.withCompiledFileAssets(path.resolve(distPath))
+        CompiledContract.withCompiledFileAssets(path.resolve(distPath, 'contract'))
     );
 
     const testEnv = getTestEnvironment(logger);
