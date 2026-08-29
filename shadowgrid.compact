@@ -1,4 +1,4 @@
-pragma language_version 0.23;
+﻿pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -8,7 +8,7 @@ export struct PlayerPrivateState {
   x: Uint<32>,
   y: Uint<32>,
   health: Uint<32>,
-  nonce: Uint<64>,
+  nonce: Field,
   salt: Bytes<32>
 }
 
@@ -58,8 +58,8 @@ export circuit verify_move(
   // 4. Validate health is unchanged
   const health_new = state_old.health;
 
-  // 5. Validate nonce increments by exactly 1
-  const nonce_new: Uint<64> = state_old.nonce + (1 as Uint<64>);
+  // 5. Validate nonce increments by exactly 1 (Field arithmetic, no overflow concern)
+  const nonce_new: Field = state_old.nonce + 1;
 
   // 6. Reconstruct new state and store as PUBLIC ledger output
   const state_new = PlayerPrivateState {
@@ -94,7 +94,7 @@ export circuit register(
     x: x, 
     y: y, 
     health: health, 
-    nonce: (1 as Uint<64>), 
+    nonce: 1, 
     salt: salt 
   };
   const c = persistentHash<PlayerPrivateState>(state);
