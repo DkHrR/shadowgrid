@@ -1,5 +1,4 @@
 Trying to compile: shadowgrid.compact dist
 Using compactc binary...
 COMPACT_HOME env variable is set; using Compact from /home/runner/work/shadowgrid/shadowgrid/compactc_bin
-Compiling 2 circuits:
 Child process exited with code 0
