@@ -59,7 +59,7 @@ export circuit verify_move(
   const health_new = state_old.health;
 
   // 5. Validate nonce increments by exactly 1
-  const nonce_new = state_old.nonce + 1;
+  const nonce_new: Uint<64> = state_old.nonce + (1 as Uint<64>);
 
   // 6. Reconstruct new state and store as PUBLIC ledger output
   const state_new = PlayerPrivateState {
@@ -94,7 +94,7 @@ export circuit register(
     x: x, 
     y: y, 
     health: health, 
-    nonce: 1, 
+    nonce: (1 as Uint<64>), 
     salt: salt 
   };
   const c = persistentHash<PlayerPrivateState>(state);
