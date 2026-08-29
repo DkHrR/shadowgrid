@@ -2,11 +2,27 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
-export ledger testMap: Map<Bytes<32>, Bytes<32>>;
+export struct PlayerState {
+  game_id: Uint<64>,
+  commitment: Bytes<32>,
+  nonce: Uint<64>,
+  is_active: Boolean
+}
 
-export circuit writeValue(
-  key: Bytes<32>,
-  val: Bytes<32>
+export ledger players: Map<Bytes<32>, PlayerState>;
+
+export circuit register_player(
+  player_id: Bytes<32>,
+  game_id: Uint<64>,
+  initial_commitment: Bytes<32>,
+  initial_nonce: Uint<64>
 ): [] {
-  testMap.insert(disclose(key), disclose(val));
+  assert(!players.member(disclose(player_id)), "Player already registered");
+
+  players.insert(disclose(player_id), PlayerState {
+    game_id: disclose(game_id),
+    commitment: disclose(initial_commitment),
+    nonce: disclose(initial_nonce),
+    is_active: true
+  });
 }
