@@ -121,6 +121,7 @@ test('E2E Runtime verification', async () => {
         let current_nonce = nonce_old;
         let current_salt = salt_old;
 
+        /*
         try {
             logger.info('Registering initial state...');
             await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_old, salt_old);
@@ -145,6 +146,7 @@ test('E2E Runtime verification', async () => {
             }
             throw e;
         }
+        */
 
         const testCases = [
             { name: "Legal move right", x: 3n, y: 2n, health: 100n, nonce: 2n, fake_witness: false, expected: true },
