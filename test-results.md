@@ -1,17 +1,20 @@
-/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/configuration.js:91
-    const { fileExists = ts.sys.fileExists, readFile = ts.sys.readFile, skipProject = index_1.DEFAULTS.skipProject, project = index_1.DEFAULTS.project, tsTrace = index_1.DEFAULTS.tsTrace, } = rawApiOptions;
-                                ^
+node:internal/modules/cjs/loader:1554
+  const err = new Error(`Cannot find module '${request}'`);
+              ^
 
-TypeError: Cannot read properties of undefined (reading 'fileExists')
-    at readConfig (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/configuration.js:91:33)
-    at findAndReadConfig (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/configuration.js:50:84)
-    at phase3 (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/bin.js:254:67)
-    at bootstrap (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/bin.js:47:30)
-    at main (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/bin.js:33:12)
-    at Object.<anonymous> (/home/runner/work/shadowgrid/shadowgrid/node_modules/ts-node/dist/bin.js:579:5)
-    at Module._compile (node:internal/modules/cjs/loader:1872:14)
-    at Object..js (node:internal/modules/cjs/loader:2003:10)
-    at Module.load (node:internal/modules/cjs/loader:1594:32)
-    at Module._load (node:internal/modules/cjs/loader:1396:12)
+Error: Cannot find module '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js/dist/cjs/effect/index.js'
+    at createEsmNotFoundErr (node:internal/modules/cjs/loader:1554:15)
+    at finalizeEsmResolution (node:internal/modules/cjs/loader:1543:9)
+    at resolveExports (node:internal/modules/cjs/loader:707:14)
+    at Module._findPath (node:internal/modules/cjs/loader:774:31)
+    at node:internal/modules/cjs/loader:1502:27
+    at nextResolveSimple (/home/runner/work/shadowgrid/shadowgrid/node_modules/tsx/dist/register-C557imBs.cjs:10:1006)
+    at /home/runner/work/shadowgrid/shadowgrid/node_modules/tsx/dist/register-C557imBs.cjs:9:4959
+    at /home/runner/work/shadowgrid/shadowgrid/node_modules/tsx/dist/register-C557imBs.cjs:9:4261
+    at resolveTsPaths (/home/runner/work/shadowgrid/shadowgrid/node_modules/tsx/dist/register-C557imBs.cjs:10:759)
+    at /home/runner/work/shadowgrid/shadowgrid/node_modules/tsx/dist/register-C557imBs.cjs:10:1199 {
+  code: 'MODULE_NOT_FOUND',
+  path: '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js'
+}
 
 Node.js v24.19.0
