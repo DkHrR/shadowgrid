@@ -15,62 +15,28 @@ export struct PlayerPrivateState {
 // Ledger storing player commitments (hash of private state)
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 
-// Ledger for game sessions (optional future use)
-export ledger games: Map<Bytes<32>, Bytes<32>>;
-
-// ---------------------------------------------------------------------------
-// Circuit: create_game
-// Registers a new game session. "admin" is the creator, "game_id" is a unique identifier,
-// and "game_commit" is a public commitment for the game state (e.g., initial board hash).
-// ---------------------------------------------------------------------------
-export circuit create_game(
-  admin: Bytes<32>,
-  game_id: Bytes<32>,
-  game_commit: Bytes<32>
-): [] {
-  // Store the game commitment; no further constraints at creation.
-  games.insert(disclose(admin), disclose(game_commit));
-}
+// Provide the local private state of the player executing the transaction
+witness localState(): PlayerPrivateState;
 
 export circuit verify_move(
-  C_old: Bytes<32>,
-  game_id: Uint<64>,
-  player_id: Bytes<32>,
-  x_old: Uint<32>,
-  y_old: Uint<32>,
-  health_old: Uint<32>,
-  nonce_old: Uint<64>,
-  salt_old: Bytes<32>,
   x_new: Uint<32>,
   y_new: Uint<32>,
-  health_new: Uint<32>,
-  nonce_new: Uint<64>,
-  salt_new: Bytes<32>
+  new_salt: Bytes<32>
 ): [] {
   const MAX_X: Uint<32> = 10;
   const MAX_Y: Uint<32> = 10;
   const MAX_SPEED: Uint<32> = 1;
 
-  // 1. Reconstruct old state and verify against PUBLIC ledger
-  const state_old = PlayerPrivateState {
-    game_id: game_id,
-    player_id: player_id,
-    x: x_old,
-    y: y_old,
-    health: health_old,
-    nonce: nonce_old,
-    salt: salt_old
-  };
+  // 1. Fetch old state from the private wallet/local storage via witness
+  const state_old = localState();
   const c_old = persistentHash<PlayerPrivateState>(state_old);
   
-  assert(c_old == C_old, "Hash(S_old) != C_old");
-  
-  // FIX: Explicitly disclose player_id for map lookup
-  assert(commitments.lookup(disclose(player_id)) == C_old, "Ledger state mismatch");
+  // Verify that the old state's commitment matches what's on the ledger
+  assert(commitments.lookup(disclose(state_old.player_id)) == c_old, "Ledger state mismatch: old state invalid");
 
   // 2. Validate movement (Manhattan distance)
-  const dx = (x_new >= x_old) ? (x_new - x_old) : (x_old - x_new);
-  const dy = (y_new >= y_old) ? (y_new - y_old) : (y_old - y_new);
+  const dx = (x_new >= state_old.x) ? (x_new - state_old.x) : (state_old.x - x_new);
+  const dy = (y_new >= state_old.y) ? (y_new - state_old.y) : (state_old.y - y_new);
   assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
 
   // 3. Validate bounds
@@ -78,33 +44,47 @@ export circuit verify_move(
   assert(y_new < MAX_Y, "Out of bounds Y");
 
   // 4. Validate health is unchanged
-  assert(health_new == health_old, "Health changed");
+  const health_new = state_old.health;
 
   // 5. Validate nonce increments by exactly 1
-  assert(nonce_new == nonce_old + 1, "Nonce must increment by 1");
+  const nonce_new = state_old.nonce + 1;
 
   // 6. Reconstruct new state and store as PUBLIC ledger output
   const state_new = PlayerPrivateState {
-    game_id: game_id,
-    player_id: player_id,
+    game_id: state_old.game_id,
+    player_id: state_old.player_id,
     x: x_new,
     y: y_new,
     health: health_new,
     nonce: nonce_new,
-    salt: salt_new
+    salt: new_salt
   };
   const c_new = persistentHash<PlayerPrivateState>(state_new);
   
-  commitments.insert(disclose(player_id), disclose(c_new));
+  commitments.insert(disclose(state_old.player_id), disclose(c_new));
 }
 
-export circuit compute_hash(game_id: Uint<64>, player_id: Bytes<32>, x: Uint<32>, y: Uint<32>, health: Uint<32>, nonce: Uint<64>, salt: Bytes<32>): Bytes<32> {
-  const state = PlayerPrivateState { game_id: game_id, player_id: player_id, x: x, y: y, health: health, nonce: nonce, salt: salt };
-  return persistentHash<PlayerPrivateState>(state);
-}
-
-export circuit register(game_id: Uint<64>, player_id: Bytes<32>, x: Uint<32>, y: Uint<32>, health: Uint<32>, nonce: Uint<64>, salt: Bytes<32>): [] {
-  const state = PlayerPrivateState { game_id: game_id, player_id: player_id, x: x, y: y, health: health, nonce: nonce, salt: salt };
+export circuit register(
+  game_id: Uint<64>, 
+  player_id: Bytes<32>, 
+  x: Uint<32>, 
+  y: Uint<32>, 
+  health: Uint<32>, 
+  salt: Bytes<32>
+): [] {
+  // During registration, we accept the parameters and insert the first commitment.
+  // The frontend will save this exact state locally.
+  const state = PlayerPrivateState { 
+    game_id: game_id, 
+    player_id: player_id, 
+    x: x, 
+    y: y, 
+    health: health, 
+    nonce: 1, 
+    salt: salt 
+  };
   const c = persistentHash<PlayerPrivateState>(state);
+  
+  // Note: For MVP we allow overwriting, but in production we'd ensure it's vacant
   commitments.insert(disclose(player_id), disclose(c));
 }
