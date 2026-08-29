@@ -1,5 +1,7 @@
 pragma language_version 0.23;
 
+import CompactStandardLibrary;
+
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 export ledger nonces: Map<Bytes<32>, Uint<64>>;
 
