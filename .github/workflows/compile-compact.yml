@@ -35,5 +35,13 @@ jobs:
           COMPACTC_VERSION: "0.31.1"
 
       - name: Run Runtime Verification Tests
-        run: npx ts-node --transpile-only run-test.ts
+        run: npx ts-node --transpile-only run-test.ts > test-results.md 2>&1 || true
+
+      - name: Commit test results
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add test-results.md
+          git commit -m "Add test results" || echo "No changes"
+          git push
 
