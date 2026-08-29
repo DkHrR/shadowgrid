@@ -57,6 +57,9 @@ test('E2E Runtime verification', async () => {
 
     const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000042';
 
+    const wallet = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
+    await wallet.start();
+
     const providers = {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'test-private-state',
@@ -67,8 +70,8 @@ test('E2E Runtime verification', async () => {
         publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
         zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath, 'contract')),
         proofProvider: httpClientProofProvider(envConfig.proofServer),
-        walletProvider: new MidnightWalletProvider(envConfig.node),
-        midnightProvider: new MidnightWalletProvider(envConfig.node)
+        walletProvider: wallet,
+        midnightProvider: wallet
     };
 
     try {
@@ -154,6 +157,9 @@ test('E2E Runtime verification', async () => {
         fs.writeFileSync('test-results.md', markdownReport);
 
     } finally {
+        if (wallet) {
+            await wallet.stop();
+        }
         await testEnv.shutdown();
     }
 }, 300000);
