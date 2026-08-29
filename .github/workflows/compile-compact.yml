@@ -38,7 +38,8 @@ jobs:
           COMPACTC_VERSION: "0.31.1"
 
       - name: Run Runtime Verification Tests
-        run: npx tsx run-test.ts > test-results.md 2>&1 || true
+        run: npx tsc run-test.ts --target ES2022 --module CommonJS --moduleResolution node --esModuleInterop
+          node run-test.js > test-results.md 2>&1 || true
 
       - name: Commit test results
         run: |
@@ -47,5 +48,6 @@ jobs:
           git add test-results.md
           git commit -m "Add test results" || echo "No changes"
           git push
+
 
 
