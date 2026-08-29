@@ -43,8 +43,10 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
-          path: test-results.md
+          name: build-artifacts
+          path: |
+            test-results.md
+            dist/
 
       - name: Commit test results
         if: always()
