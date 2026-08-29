@@ -101,7 +101,9 @@ export class MidnightWalletProvider implements MidnightProvider, WalletProvider 
       feeBlocksMargin: 5,
     };
     const builder = FluentWalletBuilder.forEnvironment(env).withDustOptions(dustOptions);
-    const buildResult = seed
+    const buildResult = (seed === 'test-wallet')
+      ? await builder.withTestWallet().buildWithoutStarting()
+      : seed
       ? await builder.withSeed(seed).buildWithoutStarting()
       : await builder.withRandomSeed().buildWithoutStarting();
     const { wallet, seeds, keystore } = buildResult as unknown as {

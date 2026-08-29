@@ -74,7 +74,7 @@ test('E2E Runtime verification', async () => {
       throw e;
     }
 
-    const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000042';
+    const GENESIS_MINT_WALLET_SEED = 'test-wallet';
 
     const wallet = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
     await wallet.start();
