@@ -8,6 +8,6 @@ export circuit test_hash(
   key: Bytes<32>,
   input: Bytes<32>
 ): [] {
-  const hash_val = persistent_hash<Bytes<32>>(input);
+  const hash_val = persistentHash<Bytes<32>>(input);
   hashes.insert(disclose(key), disclose(hash_val));
 }
