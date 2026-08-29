@@ -22,11 +22,11 @@ test('E2E Runtime verification', async () => {
     }
 
     let contractModule: any;
-    if (fs.existsSync(distPath + '/contract/index.js')) contractModule = require(path.resolve(distPath + '/contract/index.js'));
-    else if (fs.existsSync(distPath + '/contract/index.cjs')) contractModule = require(path.resolve(distPath + '/contract/index.cjs'));
-    else if (fs.existsSync(distPath + '/index.cjs')) contractModule = require(path.resolve(distPath + '/index.cjs'));
-    else if (fs.existsSync(distPath + '/isolated_test.cjs')) contractModule = require(path.resolve(distPath + '/isolated_test.cjs'));
-    else contractModule = require(path.resolve(distPath + '/isolated_test.js'));
+    if (fs.existsSync(distPath + '/contract/index.js')) contractModule = await import(path.resolve(distPath + '/contract/index.js'));
+    else if (fs.existsSync(distPath + '/contract/index.cjs')) contractModule = await import(path.resolve(distPath + '/contract/index.cjs'));
+    else if (fs.existsSync(distPath + '/index.cjs')) contractModule = await import(path.resolve(distPath + '/index.cjs'));
+    else if (fs.existsSync(distPath + '/isolated_test.cjs')) contractModule = await import(path.resolve(distPath + '/isolated_test.cjs'));
+    else contractModule = await import(path.resolve(distPath + '/isolated_test.js'));
 
     const ContractDef = contractModule.Contract;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
