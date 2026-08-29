@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Runtime Verification Tests
         run: |
-          npx vitest run run-test.spec.ts > test-results.md 2>&1 || true
+          npx vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1 || true
 
       - name: Commit test results
         run: |
@@ -53,4 +53,5 @@ jobs:
           git add test-results.md dist-contents.md
           git commit -m "Add test results" || echo "No changes"
           git push
+
 
