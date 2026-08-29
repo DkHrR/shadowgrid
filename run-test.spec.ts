@@ -42,7 +42,20 @@ test('E2E Runtime verification', async () => {
     };
 
     const testEnv = getTestEnvironment(logger);
-    const envConfig = await testEnv.start();
+    let envConfig;
+    try {
+      envConfig = await testEnv.start();
+    } catch (e) {
+      console.error(e);
+      const { execSync } = require('child_process');
+      console.log("=== DOCKER PS ===");
+      console.log(execSync('docker ps -a').toString());
+      console.log("=== DOCKER LOGS NODE ===");
+      try { console.log(execSync('docker logs $(docker ps -aq --filter name=node)').toString()); } catch(e){}
+      console.log("=== DOCKER LOGS INDEXER ===");
+      try { console.log(execSync('docker logs $(docker ps -aq --filter name=indexer)').toString()); } catch(e){}
+      throw e;
+    }
     const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000001';
     const walletProvider = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
     await walletProvider.start();
