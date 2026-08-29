@@ -1,4 +1,4 @@
-name: Compile Compact Contract
+﻿name: Compile Compact Contract
 
 on:
   push:
@@ -13,7 +13,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,29 +21,56 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch compactc v0.31.1
-        run: npx fetch-compactc
+      - name: Download official compactc binary
+        run: |
+          set -e
+          COMPACTC_VERSION="0.31.1"
+          OS="x86_64-unknown-linux-musl"
+          URL="https://github.com/midnightntwrk/compact/releases/download/compactc-v${COMPACTC_VERSION}/compactc_v${COMPACTC_VERSION}_${OS}.zip"
+          curl -fL -o compactc.zip "$URL"
+          echo "Verifying checksum..."
+          EXPECTED_SHA256="e291b4bab4d4e857707008f8b1c25c2b8e0c843f6c737d0ee6c0d9ac69a6bbfb"
+          ACTUAL_SHA256=$(sha256sum compactc.zip | cut -d ' ' -f1)
+          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "Checksum mismatch! expected=$EXPECTED_SHA256 got=$ACTUAL_SHA256" && exit 1
+          fi
+          unzip compactc.zip -d compactc_bin
+          chmod +x compactc_bin/compactc
+          ./compactc_bin/compactc --version
+          echo "${{ github.workspace }}/compactc_bin" >> $GITHUB_PATH
+
+      - name: Clean previous compiled artifacts
+        run: rm -rf dist
+
+      - name: Compile shadowgrid.compact
+        run: npx run-compactc shadowgrid.compact dist > compile-output.txt 2>&1
         env:
           COMPACTC_VERSION: "0.31.1"
 
-      - name: Compile test contract
-        run: npx run-compactc shadowgrid.compact dist > test-results.md 2>&1 || true
-        env:
-          COMPACTC_VERSION: "0.31.1"
+      - name: Verify compiled contract exists
+        run: |
+          echo "--- compile output ---"
+          cat compile-output.txt
+          if [ ! -f dist/contract/index.js ]; then
+            echo "FATAL: dist/contract/index.js missing after compilation" && exit 1
+          fi
+          node -e "require('./dist/contract/index.js')" || { echo "FATAL: compiled contract module failed to load"; exit 1; }
+          echo "Compiled contract OK"
 
       - name: Run Runtime Verification Tests
-        run: npx vitest run --testTimeout 300000 run-test.spec.ts >> test-results.md 2>&1 || true
-          
-      - name: Upload test results
+        run: npx vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: build-artifacts
           path: |
+            compile-output.txt
             test-results.md
             dist/
 
@@ -53,6 +79,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add test-results.md
-          git commit -m "Add test results" || echo "No changes"
+          git add compile-output.txt test-results.md
+          git diff --staged --quiet || git commit -m "ci: add build/test results"
           git push

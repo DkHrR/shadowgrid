@@ -17,9 +17,12 @@ test('E2E Runtime verification', async () => {
     let distPath = './dist';
 
     let contractModule: any;
-    if (fs.existsSync(distPath + '/contract/index.js')) contractModule = await import(path.resolve(distPath + '/contract/index.js'));
-    else if (fs.existsSync(distPath + '/contract/index.cjs')) contractModule = await import(path.resolve(distPath + '/contract/index.cjs'));
-    else contractModule = await import(path.resolve(distPath + '/index.cjs'));
+    const contractPath = path.resolve(distPath, 'contract', 'index.js');
+    if (fs.existsSync(contractPath)) {
+        contractModule = await import(contractPath);
+    } else {
+        throw new Error(`Compiled contract not found at ${contractPath}`);
+    }
 
     const ContractDef = contractModule.Contract;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
