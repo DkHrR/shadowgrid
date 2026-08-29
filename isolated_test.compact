@@ -2,27 +2,12 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
-export struct PlayerState {
-  game_id: Uint<64>,
-  commitment: Bytes<32>,
-  nonce: Uint<64>,
-  is_active: Boolean
-}
+export ledger hashes: Map<Bytes<32>, Bytes<32>>;
 
-export ledger players: Map<Bytes<32>, PlayerState>;
-
-export circuit register_player(
-  player_id: Bytes<32>,
-  game_id: Uint<64>,
-  initial_commitment: Bytes<32>,
-  initial_nonce: Uint<64>
+export circuit test_hash(
+  key: Bytes<32>,
+  input: Bytes<32>
 ): [] {
-  assert(!players.member(disclose(player_id)), "Player already registered");
-
-  players.insert(disclose(player_id), PlayerState {
-    game_id: disclose(game_id),
-    commitment: disclose(initial_commitment),
-    nonce: disclose(initial_nonce),
-    is_active: true
-  });
+  const hash_val = persistent_hash<Bytes<32>>(input);
+  hashes.insert(disclose(key), disclose(hash_val));
 }
