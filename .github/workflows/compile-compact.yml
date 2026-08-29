@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download official compactc binary
+      - name: Download and verify official compactc binary
         run: |
           set -e
           COMPACTC_VERSION="0.31.1"
@@ -41,7 +41,7 @@ jobs:
           unzip compactc.zip -d compactc_bin
           chmod +x compactc_bin/compactc
           ./compactc_bin/compactc --version
-          echo "${{ github.workspace }}/compactc_bin" >> $GITHUB_PATH
+          echo "COMPACT_HOME=${{ github.workspace }}/compactc_bin" >> $GITHUB_ENV
 
       - name: Clean previous compiled artifacts
         run: rm -rf dist
