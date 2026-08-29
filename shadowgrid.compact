@@ -1,4 +1,4 @@
-pragma language_version 0.23;
+﻿pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -17,17 +17,17 @@ export struct PublicPosition {
   y: Uint<32>
 }
 
+// Ledger storing player commitments (hash of private state)
 export contract ShadowGrid {
-  // Ledger storing player commitments (hash of private state)
-  export ledger commitments: Map<Bytes<32>, Bytes<32>>;
+  ledger commitments: Map<Bytes<32>, Bytes<32>>;
 
-  // Ledger storing public player positions
-  export ledger positions: Map<Bytes<32>, PublicPosition>;
+// Ledger storing public player positions
+ledger positions: Map<Bytes<32>, PublicPosition>;
 
-  // Provide the local private state of the player executing the transaction
-  witness localState(): PlayerPrivateState;
+// Provide the local private state of the player executing the transaction
+witness localState(): PlayerPrivateState;
 
-export circuit verify_move(
+circuit verify_move(
   x_new: Uint<32>,
   y_new: Uint<32>,
   new_salt: Bytes<32>
@@ -78,7 +78,7 @@ export circuit verify_move(
   positions.insert(disclose(state_old.player_id), disclose(PublicPosition { x: x_new, y: y_new }));
 }
 
-export circuit register(
+circuit register(
   game_id: Uint<64>, 
   player_id: Bytes<32>, 
   x: Uint<32>, 
