@@ -46,7 +46,9 @@ export circuit verify_move(
   const c_old = persistentHash<PlayerPrivateState>(state_old);
   
   assert(c_old == C_old, "Hash(S_old) != C_old");
-  assert(commitments.lookup(player_id) == C_old, "Ledger state mismatch");
+  
+  // FIX: Explicitly disclose player_id for map lookup
+  assert(commitments.lookup(disclose(player_id)) == C_old, "Ledger state mismatch");
 
   // 2. Validate movement (Manhattan distance)
   const dx = (x_new >= x_old) ? (x_new - x_old) : (x_old - x_new);
