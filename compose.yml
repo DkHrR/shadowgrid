@@ -1,7 +1,7 @@
 version: '3'
 services:
   node:
-    image: midnightntwrk/node:latest
+    image: midnightntwrk/midnight-node:latest
     ports:
       - "9944:9944"
   indexer:
