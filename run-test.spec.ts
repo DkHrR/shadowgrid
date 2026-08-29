@@ -1,4 +1,5 @@
-import { getTestEnvironment } from '@midnight-ntwrk/testkit-js';
+
+import { getTestEnvironment, waitForFunds } from '@midnight-ntwrk/testkit-js';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
 import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
 import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
@@ -77,6 +78,7 @@ test('E2E Runtime verification', async () => {
 
     const wallet = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
     await wallet.start();
+    await waitForFunds(wallet.wallet, envConfig, true, wallet.unshieldedKeystore);
 
     const providers = {
         privateStateProvider: levelPrivateStateProvider({
