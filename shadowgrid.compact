@@ -1,4 +1,4 @@
-﻿pragma language_version 0.23;
+pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -77,14 +77,14 @@ export circuit verify_move(
   positions.insert(disclose(state_old.player_id), disclose(PublicPosition { x: x_new, y: y_new }));
 }
 
-export circuit register(
-  game_id: Uint<64>, 
-  player_id: Bytes<32>, 
-  x: Uint<32>, 
-  y: Uint<32>, 
-  health: Uint<32>, 
-  salt: Bytes<32>
-): [] {
+export circuit register(): [] {
+  const game_id = 1 as Uint<64>;
+  const player_id = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] as Bytes<32>;
+  const x = 2 as Uint<32>;
+  const y = 2 as Uint<32>;
+  const health = 100 as Uint<32>;
+  const salt = [9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] as Bytes<32>;
+
   // Prevent registration hijacking
   assert(!commitments.member(disclose(player_id)), "Already registered");
 

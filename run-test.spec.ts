@@ -123,7 +123,7 @@ test('E2E Runtime verification', async () => {
 
         try {
             logger.info('Registering initial state...');
-            await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_old, salt_old);
+            await deployedContract.callTx.register();
         } catch (e: any) {
             console.error("REGISTER FAILED:", e);
             console.error("Error message:", e.message);
@@ -164,7 +164,7 @@ test('E2E Runtime verification', async () => {
 
             if (tc.register) {
                 try {
-                    await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health, salt_old);
+                    await deployedContract.callTx.register();
                     success = true;
                     evidence = 'Transaction accepted';
                 } catch (e: any) {
