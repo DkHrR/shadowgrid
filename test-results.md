@@ -1,20 +1,9 @@
-node:internal/modules/cjs/loader:714
-      throw e;
-      ^
 
-Error: Cannot find module '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js/dist/cjs/effect/index.js'
-    at createEsmNotFoundErr (node:internal/modules/cjs/loader:1554:15)
-    at finalizeEsmResolution (node:internal/modules/cjs/loader:1543:9)
-    at resolveExports (node:internal/modules/cjs/loader:707:14)
-    at Module._findPath (node:internal/modules/cjs/loader:774:31)
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1502:27)
-    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
-    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
-    at Module._load (node:internal/modules/cjs/loader:1294:5)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
-  code: 'MODULE_NOT_FOUND',
-  path: '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js'
-}
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/runner/work/shadowgrid/shadowgrid[39m
 
-Node.js v24.19.0
+[31mNo test files found, exiting with code 1
+[39m
+[2mfilter: [22m[33mrun-test.ts[39m
+[2minclude: [22m[33m**/*.{test,spec}.?(c|m)[jt]s?(x)[39m
+[2mexclude:  [22m[33m**/node_modules/**[2m, [22m**/.git/**[39m
+
