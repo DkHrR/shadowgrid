@@ -99,3 +99,14 @@ export circuit test_invalid_teleport(x_old: Uint<32>, y_old: Uint<32>): [] {
   const dy = (y_new >= y_old) ? (y_new - y_old) : (y_old - y_new);
   assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
 }
+
+export circuit compute_hash(game_id: Uint<64>, player_id: Bytes<32>, x: Uint<32>, y: Uint<32>, health: Uint<32>, nonce: Uint<64>, salt: Bytes<32>): Bytes<32> {
+  const state = PlayerPrivateState { game_id: game_id, player_id: player_id, x: x, y: y, health: health, nonce: nonce, salt: salt };
+  return persistentHash<PlayerPrivateState>(state);
+}
+
+export circuit register(game_id: Uint<64>, player_id: Bytes<32>, x: Uint<32>, y: Uint<32>, health: Uint<32>, nonce: Uint<64>, salt: Bytes<32>): [] {
+  const state = PlayerPrivateState { game_id: game_id, player_id: player_id, x: x, y: y, health: health, nonce: nonce, salt: salt };
+  const c = persistentHash<PlayerPrivateState>(state);
+  commitments.insert(disclose(player_id), disclose(c));
+}

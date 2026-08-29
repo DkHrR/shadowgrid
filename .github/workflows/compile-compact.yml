@@ -1,11 +1,9 @@
+
 name: Compile Compact Contract
 
 on:
   push:
     branches: [ main, "test/*" ]
-    paths:
-      - '**.compact'
-      - '.github/workflows/compile-compact.yml'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -21,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24' # Matching your local version
+          node-version: '24'
           
       - name: Install dependencies
         run: npm ci
@@ -36,8 +34,6 @@ jobs:
         env:
           COMPACTC_VERSION: "0.31.1"
 
-      - name: Upload Compilation Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: compact-artifacts
-          path: dist/
+      - name: Run Runtime Verification Tests
+        run: npx ts-node --transpile-only run-test.ts
+
