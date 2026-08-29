@@ -154,6 +154,6 @@ test('E2E Runtime verification', async () => {
         fs.writeFileSync('test-results.md', markdownReport);
 
     } finally {
-        await testEnv.stop();
+        await testEnv.shutdown();
     }
 }, 300000);
