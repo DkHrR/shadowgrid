@@ -56,7 +56,7 @@ jobs:
           echo "--- compile output ---"
           cat compile-output.txt
           echo "--- dist contents ---"
-          find dist
+          find dist > dist-contents.txt
           if [ ! -f dist/contract/index.js ]; then
             echo "FATAL: dist/contract/index.js missing after compilation" && exit 1
           fi
@@ -79,8 +79,8 @@ jobs:
       - name: Commit test results
         if: always()
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git add compile-output.txt test-results.md
-          git diff --staged --quiet || git commit -m "ci: add build/test results"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add test-results.md dist-contents.txt
+          git commit -m "ci: update test results and dist contents" || echo "No changes to commit"
           git push
