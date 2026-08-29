@@ -132,7 +132,6 @@ test('E2E Runtime verification', async () => {
     
     await walletProvider.stop();
     await testEnv.shutdown();
-}
 });
 
 
