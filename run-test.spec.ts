@@ -25,7 +25,7 @@ test('E2E Runtime verification', async () => {
     const ContractDef = contractModule.Contract;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
 
-    const CompiledShadowgridContract = contractModule.contract.pipe(CompiledContract.withWitnesses({}), 
+    const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(CompiledContract.withWitnesses({}), 
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
