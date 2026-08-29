@@ -39,39 +39,22 @@ test('E2E Runtime verification', async () => {
     };
     witnessState.salt[0] = 9;
 
-    (() => {
-        const zkirDir = path.resolve(distPath, 'zkir');
-        const keysDir = path.resolve(distPath, 'keys');
-        const layouts = ['shadowgrid', 'ShadowGrid', 'contract'];
-        for (const layout of layouts) {
-            if (fs.existsSync(zkirDir) && !fs.existsSync(path.join(zkirDir, layout))) {
-                fs.mkdirSync(path.join(zkirDir, layout), { recursive: true });
-                for (const file of fs.readdirSync(zkirDir)) {
-                    if (file.endsWith('.zkir') || file.endsWith('.bzkir')) {
-                        fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, layout, file));
-                        fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, layout, 'shadowgrid_' + file));
-                    }
-                }
-            }
-            if (fs.existsSync(keysDir) && !fs.existsSync(path.join(keysDir, layout))) {
-                fs.mkdirSync(path.join(keysDir, layout), { recursive: true });
-                for (const file of fs.readdirSync(keysDir)) {
-                    if (file.endsWith('.verifier') || file.endsWith('.prover')) {
-                        fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, layout, file));
-                        fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, layout, 'shadowgrid_' + file));
-                    }
-                }
+    const zkirDir = path.resolve(distPath, 'zkir');
+    const keysDir = path.resolve(distPath, 'keys');
+    if (fs.existsSync(zkirDir)) {
+        for (const file of fs.readdirSync(zkirDir)) {
+            if (file === 'verify_move.bzkir' || file === 'register.bzkir') {
+                fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, 'shadowgrid#' + file));
             }
         }
-    })();
-
-    const originalReadFileSync = fs.readFileSync;
-    (fs as any).readFileSync = function (pathStr: string, ...args: any[]) {
-        if (typeof pathStr === 'string' && (pathStr.includes('verify_move') || pathStr.includes('keys') || pathStr.includes('zkir'))) {
-            console.log('--- DEBUG READ --- ' + pathStr);
+    }
+    if (fs.existsSync(keysDir)) {
+        for (const file of fs.readdirSync(keysDir)) {
+            if (file === 'verify_move.verifier' || file === 'verify_move.prover' || file === 'register.verifier' || file === 'register.prover') {
+                fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, 'shadowgrid#' + file));
+            }
         }
-        return originalReadFileSync.apply(this, [pathStr, ...args] as any);
-    };
+    }
 
     const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
         CompiledContract.withWitnesses({
@@ -79,6 +62,7 @@ test('E2E Runtime verification', async () => {
         }), 
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
+
 
     const testEnv = getTestEnvironment(logger);
     let envConfig;
