@@ -1,9 +1,8 @@
-
 name: Compile Compact Contract
 
 on:
   push:
-    branches: [ main, "test/*" ]
+    branches: [ main, "merge-verified-movement", "test/*" ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -33,25 +32,24 @@ jobs:
           COMPACTC_VERSION: "0.31.1"
 
       - name: Compile test contract
-        run: npx run-compactc isolated_test.compact dist
+        run: npx run-compactc shadowgrid.compact dist
         env:
           COMPACTC_VERSION: "0.31.1"
 
-      - name: Show dist folder
-        run: |
-          ls -R dist > dist-contents.md 2>&1
-          cat dist-contents.md
-
       - name: Run Runtime Verification Tests
-        run: |
-          npx vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1 || true
+        run: npx vitest run --testTimeout 300000 run-test.spec.ts
+          
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.md
 
       - name: Commit test results
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add test-results.md dist-contents.md
+          git add test-results.md
           git commit -m "Add test results" || echo "No changes"
           git push
-
-

@@ -1,4 +1,3 @@
-
 import { getTestEnvironment } from '@midnight-ntwrk/testkit-js';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
 import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
@@ -17,21 +16,16 @@ test('E2E Runtime verification', async () => {
     const logger = pino({ level: 'info' });
     
     let distPath = './dist';
-    if (!fs.existsSync(distPath + '/contract/index.cjs') && !fs.existsSync(distPath + '/isolated_test.cjs') && !fs.existsSync(distPath + '/index.cjs')) {
-        if (fs.existsSync('./dist/isolated_test/contract/index.cjs')) distPath = './dist/isolated_test';
-    }
 
     let contractModule: any;
     if (fs.existsSync(distPath + '/contract/index.js')) contractModule = await import(path.resolve(distPath + '/contract/index.js'));
     else if (fs.existsSync(distPath + '/contract/index.cjs')) contractModule = await import(path.resolve(distPath + '/contract/index.cjs'));
-    else if (fs.existsSync(distPath + '/index.cjs')) contractModule = await import(path.resolve(distPath + '/index.cjs'));
-    else if (fs.existsSync(distPath + '/isolated_test.cjs')) contractModule = await import(path.resolve(distPath + '/isolated_test.cjs'));
-    else contractModule = await import(path.resolve(distPath + '/isolated_test.js'));
+    else contractModule = await import(path.resolve(distPath + '/index.cjs'));
 
     const ContractDef = contractModule.Contract;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
 
-    const CompiledIsolatedTestContract = CompiledContract.make('isolated_test', ContractDef).pipe(
+    const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
@@ -71,7 +65,7 @@ test('E2E Runtime verification', async () => {
     };
 
     const deployedContract = await deployContract(providers, {
-        compiledContract: CompiledIsolatedTestContract,
+        compiledContract: CompiledShadowgridContract,
         privateStateId: 'test-private-state',
         initialPrivateState: {}
     });
@@ -92,7 +86,8 @@ test('E2E Runtime verification', async () => {
         { name: 'Nonce Replay', x: 3n, y: 2n, health: 100n, nonce: 2n, expected: false },
         { name: 'Nonce Skip', x: 3n, y: 3n, health: 100n, nonce: 4n, expected: false },
         { name: 'Health Modification', x: 3n, y: 3n, health: 99n, nonce: 3n, expected: false },
-        { name: 'Out of Bounds', x: 11n, y: 2n, health: 100n, nonce: 3n, expected: false }
+        { name: 'Out of Bounds X', x: 11n, y: 2n, health: 100n, nonce: 3n, expected: false },
+        { name: 'Out of Bounds Y', x: 3n, y: 11n, health: 100n, nonce: 3n, expected: false }
     ];
 
     console.log('\n| Test | Expected | Actual | Evidence | Status |');
@@ -100,6 +95,8 @@ test('E2E Runtime verification', async () => {
 
     let current_x = x_old, current_y = y_old, current_nonce = nonce_old, current_salt = salt_old;
     let current_c = c_old;
+
+    let markdownOutput = '| Test | Expected | Actual | Evidence | Status |\n|---|---|---|---|---|\n';
 
     for (const tc of testCases) {
         const salt_new = new Uint8Array(32); salt_new[0] = Number(tc.nonce);
@@ -123,19 +120,19 @@ test('E2E Runtime verification', async () => {
         const status = (success === tc.expected) ? 'PASS' : 'FAIL';
         const expectedStr = tc.expected ? 'ACCEPT' : 'REJECT';
         const actualStr = success ? 'ACCEPT' : 'REJECT';
-        console.log('| ' + tc.name + ' | ' + expectedStr + ' | ' + actualStr + ' | ' + evidence + ' | ' + status + ' |');
+        
+        const line = '| ' + tc.name + ' | ' + expectedStr + ' | ' + actualStr + ' | ' + evidence + ' | ' + status + ' |';
+        console.log(line);
+        markdownOutput += line + '\n';
         
         if (success !== tc.expected) {
+            fs.writeFileSync('test-results.md', markdownOutput);
             console.error('FATAL: Test ' + tc.name + ' failed. Stopping.');
             process.exit(1);
         }
     }
     
+    fs.writeFileSync('test-results.md', markdownOutput);
     await walletProvider.stop();
     await testEnv.shutdown();
 });
-
-
-
-
-
