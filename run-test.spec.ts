@@ -109,14 +109,30 @@ test('E2E Runtime verification', async () => {
         
         const x_old = 2n, y_old = 2n, health_old = 100n, nonce_old = 1n;
         const salt_old = new Uint8Array(32); salt_old[0] = 9;
-
-        logger.info('Registering initial state...');
-        await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_old, salt_old);
-
+        
         let current_x = x_old;
         let current_y = y_old;
         let current_nonce = nonce_old;
         let current_salt = salt_old;
+
+        try {
+            logger.info('Registering initial state...');
+            await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_old, salt_old);
+        } catch (e) {
+            console.error("REGISTER FAILED:", e);
+            try {
+                const cp = require('child_process');
+                const containerId = cp.execSync("docker ps -q -f name=proof-server").toString().trim();
+                if (containerId) {
+                    console.log("\n\n--- PROOF SERVER LOGS ---");
+                    console.log(cp.execSync(`docker logs --tail 200 ${containerId}`).toString());
+                    console.log("-------------------------\n\n");
+                }
+            } catch (ex) {
+                console.error("Failed to fetch docker logs:", ex);
+            }
+            throw e;
+        }
 
         const testCases = [
             { name: "Legal move right", x: 3n, y: 2n, health: 100n, nonce: 2n, fake_witness: false, expected: true },
