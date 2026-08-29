@@ -39,11 +39,30 @@ test('E2E Runtime verification', async () => {
     };
     witnessState.salt[0] = 9;
 
+    const zkirDir = path.resolve(distPath, 'zkir');
+    const keysDir = path.resolve(distPath, 'keys');
+    if (fs.existsSync(zkirDir) && !fs.existsSync(path.join(zkirDir, 'shadowgrid'))) {
+        fs.mkdirSync(path.join(zkirDir, 'shadowgrid'));
+        for (const file of fs.readdirSync(zkirDir)) {
+            if (file.endsWith('.zkir') || file.endsWith('.bzkir')) {
+                fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, 'shadowgrid', file));
+            }
+        }
+    }
+    if (fs.existsSync(keysDir) && !fs.existsSync(path.join(keysDir, 'shadowgrid'))) {
+        fs.mkdirSync(path.join(keysDir, 'shadowgrid'));
+        for (const file of fs.readdirSync(keysDir)) {
+            if (file.endsWith('.verifier') || file.endsWith('.prover')) {
+                fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, 'shadowgrid', file));
+            }
+        }
+    }
+
     const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
         CompiledContract.withWitnesses({
             localState: () => witnessState
         }), 
-        CompiledContract.withCompiledFileAssets(path.resolve(distPath, 'contract'))
+        CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
     const testEnv = getTestEnvironment(logger);
