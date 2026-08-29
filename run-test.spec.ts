@@ -45,14 +45,20 @@ test('E2E Runtime verification', async () => {
     if (fs.existsSync(zkirDir)) {
         for (const file of fs.readdirSync(zkirDir)) {
             if (file === 'verify_move.bzkir' || file === 'register.bzkir') {
-                fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, 'shadowgrid#' + file));
+                const src = path.join(zkirDir, file);
+                const dst = path.join(zkirDir, 'shadowgrid#' + file);
+                fs.copyFileSync(src, dst);
+                console.log(`Copied ${file} (size: ${fs.statSync(dst).size} bytes) to ${dst}`);
             }
         }
     }
     if (fs.existsSync(keysDir)) {
         for (const file of fs.readdirSync(keysDir)) {
             if (file === 'verify_move.verifier' || file === 'verify_move.prover' || file === 'register.verifier' || file === 'register.prover') {
-                fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, 'shadowgrid#' + file));
+                const src = path.join(keysDir, file);
+                const dst = path.join(keysDir, 'shadowgrid#' + file);
+                fs.copyFileSync(src, dst);
+                console.log(`Copied ${file} (size: ${fs.statSync(dst).size} bytes) to ${dst}`);
             }
         }
     }
@@ -118,8 +124,14 @@ test('E2E Runtime verification', async () => {
         try {
             logger.info('Registering initial state...');
             await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_old, salt_old);
-        } catch (e) {
+        } catch (e: any) {
             console.error("REGISTER FAILED:", e);
+            console.error("Error message:", e.message);
+            if (e.cause) console.error("Error cause:", e.cause);
+            if (e.response) {
+                console.error("Error response data:", e.response.data);
+                console.error("Error response status:", e.response.status);
+            }
             try {
                 const cp = require('child_process');
                 const containerId = cp.execSync("docker ps -q -f name=proof-server").toString().trim();
