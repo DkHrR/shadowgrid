@@ -18,16 +18,15 @@ export struct PublicPosition {
 }
 
 // Ledger storing player commitments (hash of private state)
-export contract ShadowGrid {
-  ledger commitments: Map<Bytes<32>, Bytes<32>>;
+export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 
 // Ledger storing public player positions
-ledger positions: Map<Bytes<32>, PublicPosition>;
+export ledger positions: Map<Bytes<32>, PublicPosition>;
 
 // Provide the local private state of the player executing the transaction
 witness localState(): PlayerPrivateState;
 
-circuit verify_move(
+export circuit verify_move(
   x_new: Uint<32>,
   y_new: Uint<32>,
   new_salt: Bytes<32>
@@ -78,7 +77,7 @@ circuit verify_move(
   positions.insert(disclose(state_old.player_id), disclose(PublicPosition { x: x_new, y: y_new }));
 }
 
-circuit register(
+export circuit register(
   game_id: Uint<64>, 
   player_id: Bytes<32>, 
   x: Uint<32>, 
@@ -102,5 +101,4 @@ circuit register(
   
   commitments.insert(disclose(player_id), disclose(c));
   positions.insert(disclose(player_id), disclose(PublicPosition { x: x, y: y }));
-}
 }

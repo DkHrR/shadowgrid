@@ -24,22 +24,56 @@ test('E2E Runtime verification', async () => {
         throw new Error(`Compiled contract not found at ${contractPath}`);
     }
 
-    const ContractDef = contractModule.ShadowGrid;
+    const ContractDef = contractModule.Contract;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
 
     // Dynamic state used by witness
-    const witnessState = {
+    let witnessState = {
         game_id: 1n,
         player_id: new Uint8Array(32),
-        x: 0n,
-        y: 0n,
+        x: 2n,
+        y: 2n,
         health: 100n,
         nonce: 1n,
         salt: new Uint8Array(32)
     };
     witnessState.salt[0] = 9;
 
-    const CompiledShadowgridContract = CompiledContract.make('ShadowGrid', ContractDef).pipe(
+    (() => {
+        const zkirDir = path.resolve(distPath, 'zkir');
+        const keysDir = path.resolve(distPath, 'keys');
+        const layouts = ['shadowgrid', 'ShadowGrid', 'contract'];
+        for (const layout of layouts) {
+            if (fs.existsSync(zkirDir) && !fs.existsSync(path.join(zkirDir, layout))) {
+                fs.mkdirSync(path.join(zkirDir, layout), { recursive: true });
+                for (const file of fs.readdirSync(zkirDir)) {
+                    if (file.endsWith('.zkir') || file.endsWith('.bzkir')) {
+                        fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, layout, file));
+                        fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, layout, 'shadowgrid_' + file));
+                    }
+                }
+            }
+            if (fs.existsSync(keysDir) && !fs.existsSync(path.join(keysDir, layout))) {
+                fs.mkdirSync(path.join(keysDir, layout), { recursive: true });
+                for (const file of fs.readdirSync(keysDir)) {
+                    if (file.endsWith('.verifier') || file.endsWith('.prover')) {
+                        fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, layout, file));
+                        fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, layout, 'shadowgrid_' + file));
+                    }
+                }
+            }
+        }
+    })();
+
+    const originalReadFileSync = fs.readFileSync;
+    (fs as any).readFileSync = function (pathStr: string, ...args: any[]) {
+        if (typeof pathStr === 'string' && (pathStr.includes('verify_move') || pathStr.includes('keys') || pathStr.includes('zkir'))) {
+            console.log('--- DEBUG READ --- ' + pathStr);
+        }
+        return originalReadFileSync.apply(this, [pathStr, ...args] as any);
+    };
+
+    const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
         CompiledContract.withWitnesses({
             localState: () => witnessState
         }), 
@@ -57,9 +91,6 @@ test('E2E Runtime verification', async () => {
 
     const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000042';
 
-    const wallet = await MidnightWalletProvider.build(logger, envConfig, GENESIS_MINT_WALLET_SEED);
-    await wallet.start();
-
     const providers = {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'test-private-state',
@@ -70,8 +101,8 @@ test('E2E Runtime verification', async () => {
         publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
         zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath, 'contract')),
         proofProvider: httpClientProofProvider(envConfig.proofServer),
-        walletProvider: wallet,
-        midnightProvider: wallet
+        walletProvider: new MidnightWalletProvider(envConfig.node),
+        midnightProvider: new MidnightWalletProvider(envConfig.node)
     };
 
     try {
@@ -157,9 +188,6 @@ test('E2E Runtime verification', async () => {
         fs.writeFileSync('test-results.md', markdownReport);
 
     } finally {
-        if (wallet) {
-            await wallet.stop();
-        }
         await testEnv.shutdown();
     }
 }, 300000);
