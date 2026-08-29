@@ -2,11 +2,11 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
-export ledger testMap: Map<Bytes<32>, Cell<Bytes<32>>>;
+export ledger testMap: Map<Bytes<32>, Bytes<32>>;
 
 export circuit writeValue(
   key: Bytes<32>,
   val: Bytes<32>
 ): [] {
-  testMap[key] = val;
+  testMap.insert(key, val);
 }
