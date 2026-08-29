@@ -14,26 +14,85 @@ export struct PlayerPrivateState {
 
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 
-export circuit test_state_commitment(
+const MAX_X: Uint<32> = 10;
+const MAX_Y: Uint<32> = 10;
+const MAX_SPEED: Uint<32> = 1;
+
+export circuit verify_move(
+  C_old: Bytes<32>,
   game_id: Uint<64>,
   player_id: Bytes<32>,
-  x: Uint<32>,
-  y: Uint<32>,
-  health: Uint<32>,
-  nonce: Uint<64>,
-  salt: Bytes<32>
+  x_old: Uint<32>,
+  y_old: Uint<32>,
+  health_old: Uint<32>,
+  nonce_old: Uint<64>,
+  salt_old: Bytes<32>,
+  x_new: Uint<32>,
+  y_new: Uint<32>,
+  health_new: Uint<32>,
+  nonce_new: Uint<64>,
+  salt_new: Bytes<32>
 ): [] {
-  const state = PlayerPrivateState {
+  // 1. Reconstruct old state and verify against PUBLIC ledger
+  const state_old = PlayerPrivateState {
     game_id: game_id,
     player_id: player_id,
-    x: x,
-    y: y,
-    health: health,
-    nonce: nonce,
-    salt: salt
+    x: x_old,
+    y: y_old,
+    health: health_old,
+    nonce: nonce_old,
+    salt: salt_old
   };
+  const c_old = persistentHash<PlayerPrivateState>(state_old);
+  
+  assert(c_old == C_old, "Hash(S_old) != C_old");
+  assert(commitments.lookup(player_id) == C_old, "Ledger state mismatch");
 
-  const c = persistentHash<PlayerPrivateState>(state);
+  // 2. Validate movement (Manhattan distance)
+  // Safe subtraction without underflow using ternary operator
+  const dx = (x_new >= x_old) ? (x_new - x_old) : (x_old - x_new);
+  const dy = (y_new >= y_old) ? (y_new - y_old) : (y_old - y_new);
+  assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
 
-  commitments.insert(disclose(player_id), disclose(c));
+  // 3. Validate bounds
+  assert(x_new < MAX_X, "Out of bounds X");
+  assert(y_new < MAX_Y, "Out of bounds Y");
+
+  // 4. Validate health is unchanged
+  assert(health_new == health_old, "Health changed");
+
+  // 5. Validate nonce increments by exactly 1
+  assert(nonce_new == nonce_old + 1, "Nonce must increment by 1");
+
+  // 6. Reconstruct new state and store as PUBLIC ledger output
+  const state_new = PlayerPrivateState {
+    game_id: game_id,
+    player_id: player_id,
+    x: x_new,
+    y: y_new,
+    health: health_new,
+    nonce: nonce_new,
+    salt: salt_new
+  };
+  const c_new = persistentHash<PlayerPrivateState>(state_new);
+  
+  commitments.insert(disclose(player_id), disclose(c_new));
+}
+
+// Test A: Valid one-tile transition constraints
+export circuit test_valid_move(x_old: Uint<32>, y_old: Uint<32>): [] {
+  const x_new = x_old;
+  const y_new = y_old + 1;
+  const dx = (x_new >= x_old) ? (x_new - x_old) : (x_old - x_new);
+  const dy = (y_new >= y_old) ? (y_new - y_old) : (y_old - y_new);
+  assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
+}
+
+// Test B: Invalid teleport transition constraints
+export circuit test_invalid_teleport(x_old: Uint<32>, y_old: Uint<32>): [] {
+  const x_new = x_old + 5;
+  const y_new = y_old + 5;
+  const dx = (x_new >= x_old) ? (x_new - x_old) : (x_old - x_new);
+  const dy = (y_new >= y_old) ? (y_new - y_old) : (y_old - y_new);
+  assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
 }
