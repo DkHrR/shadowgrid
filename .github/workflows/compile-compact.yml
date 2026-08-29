@@ -81,6 +81,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add test-results.md dist-contents.txt
+          git add test-results.md dist-contents.txt compile-output.txt
           git commit -m "ci: update test results and dist contents" || echo "No changes to commit"
           git push
