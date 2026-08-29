@@ -31,8 +31,8 @@ jobs:
         env:
           COMPACTC_VERSION: "0.31.1"
 
-      - name: Compile test contract
-        run: npx run-compactc isolated_test.compact dist
+      - name: Compile shadowgrid.compact
+        run: npx run-compactc shadowgrid.compact dist
         env:
           COMPACTC_VERSION: "0.31.1"
 

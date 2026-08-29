@@ -7,9 +7,9 @@ export ledger nonces: Map<Bytes<32>, Uint<64>>;
 
 export circuit move(
   user: Bytes<32>,
-  salt: Bytes<32>,
+  commitment: Bytes<32>,
   nonce: Uint<64>
 ): [] {
-  commitments[user] = salt;
-  nonces[user] = nonce;
+  commitments.insert(disclose(user), disclose(commitment));
+  nonces.insert(disclose(user), disclose(nonce));
 }
