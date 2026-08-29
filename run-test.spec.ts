@@ -114,7 +114,7 @@ test('E2E Runtime verification', async () => {
                 current_x = tc.x; current_y = tc.y; current_nonce = tc.nonce; current_salt = salt_new;
                 current_c = computeHash(game_id, player_id, tc.x, tc.y, tc.health, tc.nonce, salt_new);
             }
-        } catch (e: any) {
+        } catch (e) {
             success = false;
             evidence = e.message ? e.message.substring(0, 40).replace(/\|/g, '') : 'Rejected';
         }
