@@ -1,18 +1,13 @@
 pragma language_version 0.23;
 
-export ledger commitments: Map<Opaque<"string">, Opaque<"string">>;
-export ledger nonces: Map<Opaque<"string">, Uint<64>>;
+export ledger commitments: Map<Bytes<32>, Bytes<32>>;
+export ledger nonces: Map<Bytes<32>, Uint<64>>;
 
 export circuit move(
-  user: Opaque<"string">,
-  old_x: Uint<32>,
-  old_y: Uint<32>,
-  new_x: Uint<32>,
-  new_y: Uint<32>,
-  salt: Opaque<"string">,
+  user: Bytes<32>,
+  salt: Bytes<32>,
   nonce: Uint<64>
 ): [] {
-  // Omitted complex checks for MVP toolchain test
-  commitments[user] = disclose(salt);
-  nonces[user] = nonce + 1;
+  commitments[user] = salt;
+  nonces[user] = nonce;
 }
