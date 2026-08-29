@@ -12,8 +12,16 @@ export struct PlayerPrivateState {
   salt: Bytes<32>
 }
 
+export struct PublicPosition {
+  x: Uint<32>,
+  y: Uint<32>
+}
+
 // Ledger storing player commitments (hash of private state)
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
+
+// Ledger storing public player positions
+export ledger positions: Map<Bytes<32>, PublicPosition>;
 
 // Provide the local private state of the player executing the transaction
 witness localState(): PlayerPrivateState;
@@ -33,6 +41,10 @@ export circuit verify_move(
   
   // Verify that the old state's commitment matches what's on the ledger
   assert(commitments.lookup(disclose(state_old.player_id)) == c_old, "Ledger state mismatch: old state invalid");
+
+  // CRITICAL INVARIANT: The public board must exactly match the cryptographic shadow state.
+  const pos_old = positions.lookup(disclose(state_old.player_id));
+  assert(pos_old.x == state_old.x && pos_old.y == state_old.y, "Public position desynchronized");
 
   // 2. Validate movement (Manhattan distance)
   const dx = (x_new >= state_old.x) ? (x_new - state_old.x) : (state_old.x - x_new);
@@ -62,6 +74,7 @@ export circuit verify_move(
   const c_new = persistentHash<PlayerPrivateState>(state_new);
   
   commitments.insert(disclose(state_old.player_id), disclose(c_new));
+  positions.insert(disclose(state_old.player_id), disclose(PublicPosition { x: x_new, y: y_new }));
 }
 
 export circuit register(
@@ -72,8 +85,9 @@ export circuit register(
   health: Uint<32>, 
   salt: Bytes<32>
 ): [] {
-  // During registration, we accept the parameters and insert the first commitment.
-  // The frontend will save this exact state locally.
+  // Prevent registration hijacking
+  assert(!commitments.member(disclose(player_id)), "Already registered");
+
   const state = PlayerPrivateState { 
     game_id: game_id, 
     player_id: player_id, 
@@ -85,6 +99,6 @@ export circuit register(
   };
   const c = persistentHash<PlayerPrivateState>(state);
   
-  // Note: For MVP we allow overwriting, but in production we'd ensure it's vacant
   commitments.insert(disclose(player_id), disclose(c));
+  positions.insert(disclose(player_id), disclose(PublicPosition { x: x, y: y }));
 }
