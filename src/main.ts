@@ -1,7 +1,7 @@
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
 import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
 import { deployContract, findDeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
-import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
+import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-fetch-zk-config-provider';
 import { toHex, fromHex } from '@midnight-ntwrk/midnight-js-utils';
 import { Transaction } from '@midnight-ntwrk/midnight-js-types';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
@@ -43,6 +43,7 @@ const witnesses = {
 };
 
 const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ShadowgridContractClass)
+// @ts-ignore
   .pipe(CompiledContract.withWitnesses(witnesses));
 
 document.getElementById('connect-btn')?.addEventListener('click', async () => {
@@ -88,7 +89,7 @@ const getProviders = async () => {
     walletProvider: {
       getCoinPublicKey: () => shieldedAddresses.shieldedCoinPublicKey,
       getEncryptionPublicKey: () => shieldedAddresses.shieldedEncryptionPublicKey,
-      balanceTx: async (tx: any, ttl?: Date) => {
+      balanceTx: async (tx: any) => {
         const serializedTx = toHex(tx.serialize());
         const received = await connectedAPI.balanceUnsealedTransaction(serializedTx);
         return Transaction.deserialize('signature', 'proof', 'binding', fromHex(received.tx));
@@ -134,8 +135,8 @@ const handleMove = async (newX: number, newY: number) => {
     log('Join or host a game first!');
     return;
   }
-  log(\Attempting to move to (\, \)...\);
-  
+  log(`Attempting to move to (${newX}, ${newY})...`);
+
   try {
     const newSalt = new Uint8Array(32);
     crypto.getRandomValues(newSalt);
@@ -188,6 +189,7 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     };
     
     log('Deploying new ShadowGrid contract...');
+// @ts-ignore
     deployedContract = await deployContract(p, {
       compiledContract: CompiledShadowgridContract,
       privateStateId: 'shadowgrid-state',
@@ -196,7 +198,7 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     
     const addr = deployedContract.deployTxData.public.contractAddress;
     log('Contract deployed at: ' + addr);
-    document.getElementById('contract-addr')!.innerText = addr;
+    document.getElementById('contract-addr')!.innerText = addr; localStorage.setItem('shadowgrid-contract', addr);
     
     log('Registering player...');
     const tx = await deployedContract.callTx.register(
@@ -214,6 +216,8 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     log('Error: ' + e.message);
   }
 });
+
+const savedAddr = localStorage.getItem('shadowgrid-contract'); if (savedAddr) { (document.getElementById('contract-input') as HTMLInputElement).value = savedAddr; }
 
 document.getElementById('join-btn')?.addEventListener('click', async () => {
   if (!connectedAPI) return;
@@ -249,6 +253,7 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
     const finalInitialState = existingState || initialState;
     
     log('Connecting to ShadowGrid contract...');
+// @ts-ignore
     deployedContract = await findDeployedContract(p, {
       contractAddress: addr,
       compiledContract: CompiledShadowgridContract,
@@ -256,7 +261,7 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
       initialPrivateState: finalInitialState
     });
     
-    document.getElementById('contract-addr')!.innerText = addr;
+    document.getElementById('contract-addr')!.innerText = addr; localStorage.setItem('shadowgrid-contract', addr);
     
     if (!existingState) {
         log('Registering player...');
