@@ -1,5 +1,13 @@
 version: '3'
 services:
+  node:
+    image: midnightntwrk/node:latest
+    ports:
+      - "9944:9944"
+  indexer:
+    image: midnightntwrk/indexer-standalone:latest
+    ports:
+      - "8088:8088"
   proof-server:
     image: midnightntwrk/proof-server:latest
     command: ["midnight-proof-server", "--network", "undeployed", "--verbose"]
