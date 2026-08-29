@@ -1,4 +1,4 @@
-﻿name: Compile Compact Contract
+name: Compile Compact Contract
 
 on:
   push:
@@ -55,6 +55,8 @@ jobs:
         run: |
           echo "--- compile output ---"
           cat compile-output.txt
+          echo "--- dist contents ---"
+          find dist
           if [ ! -f dist/contract/index.js ]; then
             echo "FATAL: dist/contract/index.js missing after compilation" && exit 1
           fi
