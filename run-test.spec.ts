@@ -67,7 +67,7 @@ test('E2E Runtime verification', async () => {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'test-private-state',
             signingKeyStoreName: 'test-signing-keys',
-            privateStoragePasswordProvider: () => 'test-password-12345',
+            privateStoragePasswordProvider: () => 'shadowgrid-production-password-998877',
             accountId: GENESIS_MINT_WALLET_SEED
         }),
         publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
