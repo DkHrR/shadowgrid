@@ -1,0 +1,10 @@
+version: '3'
+services:
+  proof-server:
+    image: midnightntwrk/proof-server:latest
+    command: ["midnight-proof-server", "--network", "undeployed", "--verbose"]
+    ports:
+      - "6300:6300"
+    environment:
+      RUST_BACKTRACE: "full"
+      RUST_LOG: "trace"
