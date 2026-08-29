@@ -1,3 +1,3 @@
-npm warn exec The following package was not found and will be installed: run-compactc@0.0.1
-npm warn deprecated run-compactc@0.0.1: This name is reserved by Midnight Network to prevent dependency confusion. Use @midnight-ntwrk/midnight-js-compact.
-This name is reserved by Midnight Network to prevent dependency confusion. Use @midnight-ntwrk/midnight-js-compact.
+Trying to compile: shadowgrid.compact dist
+Using compactc binary...
+Error: Compact version 0.31.1 not found at /home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/midnight-js-compact/managed/0.31.1. Run fetch-compactc --version=0.31.1 first.
