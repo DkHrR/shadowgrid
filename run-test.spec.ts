@@ -24,41 +24,22 @@ test('E2E Runtime verification', async () => {
         throw new Error(`Compiled contract not found at ${contractPath}`);
     }
 
-    const ContractDef = contractModule.Contract;
+    const ContractDef = contractModule.ShadowGrid;
     if (!ContractDef) throw new Error('Contract export not found in generated module');
 
     // Dynamic state used by witness
-    let witnessState = {
+    const witnessState = {
         game_id: 1n,
         player_id: new Uint8Array(32),
-        x: 2n,
-        y: 2n,
+        x: 0n,
+        y: 0n,
         health: 100n,
         nonce: 1n,
         salt: new Uint8Array(32)
     };
     witnessState.salt[0] = 9;
 
-    const zkirDir = path.resolve(distPath, 'zkir');
-    const keysDir = path.resolve(distPath, 'keys');
-    if (fs.existsSync(zkirDir) && !fs.existsSync(path.join(zkirDir, 'shadowgrid'))) {
-        fs.mkdirSync(path.join(zkirDir, 'shadowgrid'));
-        for (const file of fs.readdirSync(zkirDir)) {
-            if (file.endsWith('.zkir') || file.endsWith('.bzkir')) {
-                fs.copyFileSync(path.join(zkirDir, file), path.join(zkirDir, 'shadowgrid', file));
-            }
-        }
-    }
-    if (fs.existsSync(keysDir) && !fs.existsSync(path.join(keysDir, 'shadowgrid'))) {
-        fs.mkdirSync(path.join(keysDir, 'shadowgrid'));
-        for (const file of fs.readdirSync(keysDir)) {
-            if (file.endsWith('.verifier') || file.endsWith('.prover')) {
-                fs.copyFileSync(path.join(keysDir, file), path.join(keysDir, 'shadowgrid', file));
-            }
-        }
-    }
-
-    const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
+    const CompiledShadowgridContract = CompiledContract.make('ShadowGrid', ContractDef).pipe(
         CompiledContract.withWitnesses({
             localState: () => witnessState
         }), 

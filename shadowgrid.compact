@@ -2,6 +2,9 @@
 
 import CompactStandardLibrary;
 
+export contract ShadowGrid {
+
+
 export struct PlayerPrivateState {
   game_id: Uint<64>,
   player_id: Bytes<32>,
@@ -101,4 +104,5 @@ export circuit register(
   
   commitments.insert(disclose(player_id), disclose(c));
   positions.insert(disclose(player_id), disclose(PublicPosition { x: x, y: y }));
+}
 }
