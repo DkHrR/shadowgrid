@@ -47,7 +47,7 @@ jobs:
         run: rm -rf dist
 
       - name: Compile shadowgrid.compact
-        run: npx run-compactc shadowgrid.compact dist > compile-output.txt 2>&1
+        run: npx --no-install run-compactc shadowgrid.compact dist > compile-output.txt 2>&1
         env:
           COMPACTC_VERSION: "0.31.1"
 
@@ -62,7 +62,7 @@ jobs:
           echo "Compiled contract OK"
 
       - name: Run Runtime Verification Tests
-        run: npx vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1
+        run: npx --no-install vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
