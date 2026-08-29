@@ -37,6 +37,11 @@ jobs:
         env:
           COMPACTC_VERSION: "0.31.1"
 
+      - name: Show dist folder
+        run: |
+          ls -R dist > dist-contents.md 2>&1
+          cat dist-contents.md
+
       - name: Run Runtime Verification Tests
         run: |
           npx vitest run run-test.spec.ts > test-results.md 2>&1 || true
@@ -45,8 +50,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add test-results.md
+          git add test-results.md dist-contents.md
           git commit -m "Add test results" || echo "No changes"
           git push
-
 
