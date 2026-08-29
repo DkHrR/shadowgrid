@@ -8,5 +8,5 @@ export circuit writeValue(
   key: Bytes<32>,
   val: Bytes<32>
 ): [] {
-  testMap.insert(key, val);
+  testMap.insert(disclose(key), disclose(val));
 }
