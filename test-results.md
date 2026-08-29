@@ -1,10 +1,20 @@
-error TS5108: Option 'moduleResolution=node10' has been removed. Please remove it from your configuration.
-error TS6231: Could not resolve the path 'node' with the extensions: '.ts', '.tsx', '.d.ts', '.cts', '.d.cts', '.mts', '.d.mts'.
-  The file is in the program because:
-    Root file specified for compilation
-error TS6504: File '/home/runner/work/shadowgrid/shadowgrid/run-test.js' is a JavaScript file. Did you mean to enable the 'allowJs' option?
-  The file is in the program because:
-    Root file specified for compilation
-error TS6504: File 'run-test.js' is a JavaScript file. Did you mean to enable the 'allowJs' option?
-  The file is in the program because:
-    Root file specified for compilation
+node:internal/modules/cjs/loader:714
+      throw e;
+      ^
+
+Error: Cannot find module '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js/dist/cjs/effect/index.js'
+    at createEsmNotFoundErr (node:internal/modules/cjs/loader:1554:15)
+    at finalizeEsmResolution (node:internal/modules/cjs/loader:1543:9)
+    at resolveExports (node:internal/modules/cjs/loader:707:14)
+    at Module._findPath (node:internal/modules/cjs/loader:774:31)
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1502:27)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+  code: 'MODULE_NOT_FOUND',
+  path: '/home/runner/work/shadowgrid/shadowgrid/node_modules/@midnight-ntwrk/compact-js'
+}
+
+Node.js v24.19.0
