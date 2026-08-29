@@ -135,7 +135,7 @@ test('E2E Runtime verification', async () => {
             }
             try {
                 const cp = require('child_process');
-                const containerId = cp.execSync("docker ps -q -f name=proof-server").toString().trim();
+                const containerId = cp.execSync("docker ps -q -f ancestor=midnightntwrk/proof-server:8.1.0").toString().trim();
                 if (containerId) {
                     console.log("\n\n--- PROOF SERVER LOGS ---");
                     console.log(cp.execSync(`docker logs --tail 200 ${containerId}`).toString());
