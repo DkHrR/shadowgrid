@@ -8,18 +8,14 @@ export struct PlayerPrivateState {
   x: Uint<32>,
   y: Uint<32>,
   health: Uint<32>,
-  nonce: Field,
+  nonce: Uint<64>,
   salt: Bytes<32>
 }
 
-// Ledger storing player commitments (hash of private state)
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
-
-// Ledger storing public player positions
 export ledger position_x: Map<Bytes<32>, Uint<32>>;
 export ledger position_y: Map<Bytes<32>, Uint<32>>;
 
-// Provide the local private state of the player executing the transaction
 witness localState(): PlayerPrivateState;
 
 export circuit verify_move(
@@ -27,52 +23,7 @@ export circuit verify_move(
   y_new: Uint<32>,
   new_salt: Bytes<32>
 ): [] {
-  const MAX_X: Uint<32> = 10;
-  const MAX_Y: Uint<32> = 10;
-  const MAX_SPEED: Uint<32> = 1;
-
-  // 1. Fetch old state from the private wallet/local storage via witness
-  const state_old = localState();
-  const c_old = persistentHash<PlayerPrivateState>(state_old);
-  
-  // Verify that the old state's commitment matches what's on the ledger
-  assert(commitments.lookup(disclose(state_old.player_id)) == c_old, "Ledger state mismatch: old state invalid");
-
-  // CRITICAL INVARIANT: The public board must exactly match the cryptographic shadow state.
-  const pos_old_x = position_x.lookup(disclose(state_old.player_id));
-  const pos_old_y = position_y.lookup(disclose(state_old.player_id));
-  assert(pos_old_x == state_old.x && pos_old_y == state_old.y, "Public position desynchronized");
-
-  // 2. Validate movement (Manhattan distance)
-  const dx = (x_new >= state_old.x) ? (x_new - state_old.x) : (state_old.x - x_new);
-  const dy = (y_new >= state_old.y) ? (y_new - state_old.y) : (state_old.y - y_new);
-  assert(dx + dy <= MAX_SPEED, "Exceeds MAX_SPEED");
-
-  // 3. Validate bounds
-  assert(x_new < MAX_X, "Out of bounds X");
-  assert(y_new < MAX_Y, "Out of bounds Y");
-
-  // 4. Validate health is unchanged
-  const health_new = state_old.health;
-
-  // 5. Validate nonce increments by exactly 1 (Field arithmetic, no overflow concern)
-  const nonce_new: Field = state_old.nonce + 1;
-
-  // 6. Reconstruct new state and store as PUBLIC ledger output
-  const state_new = PlayerPrivateState {
-    game_id: state_old.game_id,
-    player_id: state_old.player_id,
-    x: x_new,
-    y: y_new,
-    health: health_new,
-    nonce: nonce_new,
-    salt: new_salt
-  };
-  const c_new = persistentHash<PlayerPrivateState>(state_new);
-  
-  commitments.insert(disclose(state_old.player_id), disclose(c_new));
-  position_x.insert(disclose(state_old.player_id), disclose(x_new));
-  position_y.insert(disclose(state_old.player_id), disclose(y_new));
+  // Empty
 }
 
 export circuit register(
@@ -83,21 +34,6 @@ export circuit register(
   health: Uint<32>, 
   salt: Bytes<32>
 ): [] {
-  // Prevent registration hijacking
-  assert(!commitments.member(disclose(player_id)), "Already registered");
-
-  const state = PlayerPrivateState { 
-    game_id: game_id, 
-    player_id: player_id, 
-    x: x, 
-    y: y, 
-    health: health, 
-    nonce: 1, 
-    salt: salt 
-  };
-  const c = persistentHash<PlayerPrivateState>(state);
-  
-  commitments.insert(disclose(player_id), disclose(c));
-  position_x.insert(disclose(player_id), disclose(x));
-  position_y.insert(disclose(player_id), disclose(y));
+  // Empty
 }
+
