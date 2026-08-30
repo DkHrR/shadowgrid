@@ -62,6 +62,8 @@ test('E2E Runtime verification', async () => {
     await wallet.start();
     await waitForFunds(wallet.wallet, envConfig, true, wallet.unshieldedKeystore);
 
+    const zkConfigProvider = new NodeZkConfigProvider(path.resolve(distPath));
+
     const providers = {
         privateStateProvider: levelPrivateStateProvider({
             privateStateStoreName: 'test-private-state',
@@ -70,8 +72,8 @@ test('E2E Runtime verification', async () => {
             accountId: GENESIS_MINT_WALLET_SEED
         }),
         publicDataProvider: indexerPublicDataProvider(envConfig.indexer, envConfig.indexerWS),
-        zkConfigProvider: new NodeZkConfigProvider(path.resolve(distPath)),
-        proofProvider: httpClientProofProvider(envConfig.proofServer),
+        zkConfigProvider: zkConfigProvider,
+        proofProvider: httpClientProofProvider(envConfig.proofServer, zkConfigProvider),
         walletProvider: wallet,
         midnightProvider: wallet
     };
