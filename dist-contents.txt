@@ -3,5 +3,15 @@ dist/contract
 dist/contract/index.d.ts
 dist/contract/index.js
 dist/contract/index.js.map
+dist/zkir
+dist/zkir/verify_move.bzkir
+dist/zkir/register.bzkir
+dist/zkir/verify_move.zkir
+dist/zkir/register.zkir
 dist/compiler
 dist/compiler/contract-info.json
+dist/keys
+dist/keys/verify_move.prover
+dist/keys/register.prover
+dist/keys/verify_move.verifier
+dist/keys/register.verifier
