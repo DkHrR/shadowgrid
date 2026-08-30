@@ -178,7 +178,7 @@ await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health
                     evidence = 'Transaction accepted';
                 } catch (e: any) {
                     success = false;
-                    evidence = e.message.substring(0, 50).replace(/\n/g, ' ') + '...';
+                    evidence = e.message.substring(0, 5000).replace(/\n/g, ' ') + '...';
                 }
             } else {
                 const salt_new = crypto.getRandomValues(new Uint8Array(32)); salt_new[0] = Number(tc.nonce);
@@ -203,7 +203,7 @@ await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health
                     }
                 } catch (e: any) {
                     success = false;
-                    evidence = e.message.substring(0, 50).replace(/\n/g, ' ') + '...';
+                    evidence = e.message.substring(0, 5000).replace(/\n/g, ' ') + '...';
                 }
             }
 
