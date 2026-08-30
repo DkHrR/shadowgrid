@@ -108,6 +108,7 @@ test('E2E Runtime verification', async () => {
             initialPrivateState: {}
         });
 
+        providers.privateStateProvider.setContractAddress(deployedContract.deployTxData.public.contractAddress);
         logger.info('Contract deployed successfully at ' + deployedContract.deployTxData.public.contractAddress);
 
         const game_id = 1n;
