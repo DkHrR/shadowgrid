@@ -18,6 +18,18 @@ export ledger position_y: Map<Bytes<32>, Uint<32>>;
 
 witness localState(): PlayerPrivateState;
 
+// register: takes NO public parameters.
+// All initial state comes from the private witness (localState()).
+// This guarantees persistentHash uses the same serialization path as verify_move.
+export circuit register(): [] {
+  const st = localState();
+  assert(commitments.member(disclose(st.player_id)) == false, "Player already registered");
+  const c = persistentHash<PlayerPrivateState>(st);
+  commitments.insert(disclose(st.player_id), disclose(c));
+  position_x.insert(disclose(st.player_id), disclose(st.x));
+  position_y.insert(disclose(st.player_id), disclose(st.y));
+}
+
 export circuit verify_move(
   x_new: Uint<32>,
   y_new: Uint<32>,
@@ -25,52 +37,27 @@ export circuit verify_move(
 ): [] {
   const old_state = localState();
   const old_c = persistentHash<PlayerPrivateState>(old_state);
-  
+
   assert(commitments.member(disclose(old_state.player_id)), "Player not registered");
   assert(commitments.lookup(disclose(old_state.player_id)) == disclose(old_c), "Invalid state transition");
-  
+
   const dx_ok = (x_new == old_state.x) || (x_new == old_state.x + (1 as Uint<32>)) || (x_new + (1 as Uint<32>) == old_state.x);
   const dy_ok = (y_new == old_state.y) || (y_new == old_state.y + (1 as Uint<32>)) || (y_new + (1 as Uint<32>) == old_state.y);
   assert(dx_ok, "Move too far");
   assert(dy_ok, "Move too far");
-  
+
   const new_state = PlayerPrivateState {
     game_id: old_state.game_id,
     player_id: old_state.player_id,
     x: x_new,
     y: y_new,
     health: old_state.health,
-    nonce: old_state.nonce + 1 as Uint<64>,
+    nonce: old_state.nonce + (1 as Uint<64>),
     salt: new_salt
   };
-  
+
   const new_c = persistentHash<PlayerPrivateState>(new_state);
   commitments.insert(disclose(old_state.player_id), disclose(new_c));
   position_x.insert(disclose(old_state.player_id), disclose(x_new));
   position_y.insert(disclose(old_state.player_id), disclose(y_new));
-}
-
-export circuit register(
-  game_id: Uint<64>, 
-  player_id: Bytes<32>, 
-  x: Uint<32>, 
-  y: Uint<32>, 
-  health: Uint<32>, 
-  salt: Bytes<32>
-): [] {
-  assert(commitments.member(disclose(player_id)) == false, "Player already registered");
-
-  const st = PlayerPrivateState {
-    game_id: game_id,
-    player_id: player_id,
-    x: x,
-    y: y,
-    health: health,
-    nonce: 1 as Uint<64>,
-    salt: salt
-  };
-  const c = persistentHash<PlayerPrivateState>(st);
-  commitments.insert(disclose(player_id), disclose(c));
-  position_x.insert(disclose(player_id), disclose(x));
-  position_y.insert(disclose(player_id), disclose(y));
 }
