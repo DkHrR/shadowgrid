@@ -1,4 +1,1 @@
-Exception: shadowgrid.compact line 49 char 21:
-  mismatch between actual type Uint<0..36893488147419103231> and declared type Uint<64> for field
-  nonce of struct PlayerPrivateState<game_id: Uint<64>, player_id: Bytes<32>, x: Uint<32>, y:
-  Uint<32>, health: Uint<32>, nonce: Uint<64>, salt: Bytes<32>>
+Compiling 2 circuits:
