@@ -8,7 +8,7 @@ import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-pri
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 
 // @ts-ignore
-import { contract as shadowgridContract, Contract as ShadowgridContractClass } from '../dist/contract/index.js';
+import { contract as shadowgridContract, Contract as ShadowgridContractClass, ledger } from '../dist/contract/index.js';
 // @ts-ignore
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
@@ -35,10 +35,11 @@ let providers: any = null;
 let deployedContract: any = null;
 let gameId = 1n;
 let shieldedAddresses: any = null;
+let myPlayerIdHex: string = "";
 
 const witnesses = {
-    localState: ({ privateState }: any) => {
-        return [privateState, privateState];
+    localState: (context: any) => {
+        return [context.privateState, context.privateState];
     }
 };
 
@@ -63,6 +64,7 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
     
     shieldedAddresses = await connectedAPI.getShieldedAddresses();
     document.getElementById('wallet-addr')!.innerText = shieldedAddresses.shieldedCoinPublicKey.substring(0, 16) + '...';
+    myPlayerIdHex = toHex(fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32));
     
     document.getElementById('host-btn')?.removeAttribute('disabled');
     document.getElementById('join-btn')?.removeAttribute('disabled');
@@ -105,17 +107,45 @@ const getProviders = async () => {
   return providers;
 };
 
-const generateGrid = async () => {
+const updateUI = async () => {
+  if (!deployedContract || !providers) return;
   const grid = document.getElementById('game-grid')!;
   grid.innerHTML = '';
   
-  let currentX = -1;
-  let currentY = -1;
-  if (providers) {
-      const state = await providers.privateStateProvider.get('shadowgrid-state');
-      if (state) {
-          currentX = Number(state.x);
-          currentY = Number(state.y);
+  // 1. Fetch private state to know our identity/position
+  
+  
+  const state = await providers.privateStateProvider.get('shadowgrid-state');
+  if (state) {
+      
+      
+  }
+
+  // 2. Fetch public ledger state
+  const contractAddr = deployedContract.deployTxData.public.contractAddress;
+  const contractState = await providers.publicDataProvider.queryContractState(contractAddr);
+  let publicPlayers = new Map<string, {x: number, y: number}>();
+  
+  if (contractState != null) {
+      const l = ledger(contractState.data);
+      if (l && l.position_x) {
+          const itX = l.position_x[Symbol.iterator]();
+          let nextX = itX.next();
+          while (!nextX.done) {
+              const [pidBytes, x] = nextX.value;
+              const hexId = toHex(pidBytes);
+              publicPlayers.set(hexId, { x: Number(x), y: -1 });
+              nextX = itX.next();
+          }
+          const itY = l.position_y[Symbol.iterator]();
+          let nextY = itY.next();
+          while (!nextY.done) {
+              const [pidBytes, y] = nextY.value;
+              const hexId = toHex(pidBytes);
+              const p = publicPlayers.get(hexId);
+              if (p) p.y = Number(y);
+              nextY = itY.next();
+          }
       }
   }
 
@@ -123,7 +153,28 @@ const generateGrid = async () => {
     for (let x = 0; x < 10; x++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
-      if (x === currentX && y === currentY) cell.classList.add('active');
+      
+      let isOccupied = false;
+      let isMe = false;
+
+      // Check all players
+      for (const [pid, pos] of publicPlayers.entries()) {
+          if (pos.x === x && pos.y === y) {
+              isOccupied = true;
+              if (pid === myPlayerIdHex) {
+                  isMe = true;
+              }
+          }
+      }
+
+      if (isMe) {
+          cell.classList.add('active'); // Blue for me
+          cell.innerText = "ME";
+      } else if (isOccupied) {
+          cell.style.backgroundColor = '#ff4444'; // Red for others
+          cell.innerText = "OPP";
+      }
+      
       cell.addEventListener('click', () => handleMove(x, y));
       grid.appendChild(cell);
     }
@@ -135,24 +186,29 @@ const handleMove = async (newX: number, newY: number) => {
     log('Join or host a game first!');
     return;
   }
+  
+  const p = await getProviders();
+  const oldState = await p.privateStateProvider.get('shadowgrid-state');
+  if (!oldState) {
+      log("Error: Private state not found");
+      return;
+  }
+  
+  const dx = Math.abs(Number(oldState.x) - newX);
+  const dy = Math.abs(Number(oldState.y) - newY);
+  if (dx + dy !== 1) {
+      log('Invalid move! You can only move 1 tile up, down, left, or right.');
+      return;
+  }
+
   log(`Attempting to move to (${newX}, ${newY})...`);
+  document.getElementById('status-text')!.innerText = 'Generating ZK Proof...';
 
   try {
     const newSalt = new Uint8Array(32);
     crypto.getRandomValues(newSalt);
+    newSalt[0] = Number(oldState.nonce);
     
-    log('Generating ZK proof for move...');
-    // verify_move: x_new, y_new, new_salt
-    const tx = await deployedContract.callTx.verify_move(
-      BigInt(newX),
-      BigInt(newY),
-      newSalt
-    );
-    log('Transaction accepted! TxId: ' + tx.txId);
-    
-    // Update private state
-    const p = await getProviders();
-    const oldState = await p.privateStateProvider.get('shadowgrid-state');
     const newState = {
         ...oldState,
         x: BigInt(newX),
@@ -160,23 +216,39 @@ const handleMove = async (newX: number, newY: number) => {
         nonce: oldState.nonce + 1n,
         salt: newSalt
     };
+    
     await p.privateStateProvider.set('shadowgrid-state', newState);
     
-    generateGrid();
+    log('Submitting move...');
+    // verify_move: x_new, y_new, new_salt
+    const tx = await deployedContract.callTx.verify_move(
+      BigInt(newX),
+      BigInt(newY),
+      newSalt
+    );
+    log('Transaction accepted! TxId: ' + tx.txId);
+    document.getElementById('status-text')!.innerText = 'Move Confirmed';
+    
+    updateUI();
   } catch (e: any) {
     log('Move failed: ' + e.message);
+    document.getElementById('status-text')!.innerText = 'Move Failed';
+    // Revert state
+    await p.privateStateProvider.set('shadowgrid-state', oldState);
   }
 };
 
 document.getElementById('host-btn')?.addEventListener('click', async () => {
   if (!connectedAPI) return;
   log('Deploying contract and registering initial state...');
+  document.getElementById('status-text')!.innerText = 'Deploying...';
   
   try {
     const p = await getProviders();
     const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
     const salt = new Uint8Array(32);
     crypto.getRandomValues(salt);
+    salt[0] = 0; 
     
     const initialState: PrivateState = {
       game_id: gameId,
@@ -198,22 +270,19 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     
     const addr = deployedContract.deployTxData.public.contractAddress;
     log('Contract deployed at: ' + addr);
-    document.getElementById('contract-addr')!.innerText = addr; localStorage.setItem('shadowgrid-contract', addr);
+    document.getElementById('contract-addr')!.innerText = addr; 
+    localStorage.setItem('shadowgrid-contract', addr);
     
     log('Registering player...');
-    const tx = await deployedContract.callTx.register(
-      gameId,
-      playerId,
-      2n,
-      2n,
-      100n, // health
-      salt
-    );
+    document.getElementById('status-text')!.innerText = 'Registering ZK Proof...';
+    const tx = await deployedContract.callTx.register();
     log('Registered! TxId: ' + tx.txId);
+    document.getElementById('status-text')!.innerText = 'Playing';
     
-    generateGrid();
+    updateUI();
   } catch(e: any) {
     log('Error: ' + e.message);
+    document.getElementById('status-text')!.innerText = 'Error';
   }
 });
 
@@ -231,60 +300,73 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
   try {
     const p = await getProviders();
     const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
-    const salt = new Uint8Array(32);
-    crypto.getRandomValues(salt);
     
-    const initialState: PrivateState = {
-      game_id: gameId,
-      player_id: playerId,
-      x: 8n, // Spawn at different location
-      y: 8n,
-      health: 100n,
-      nonce: 1n,
-      salt: salt
-    };
-    
-    // Attempt to read existing private state first to survive reload
     let existingState;
     try {
         existingState = await p.privateStateProvider.get('shadowgrid-state');
     } catch(e) {}
     
-    const finalInitialState = existingState || initialState;
+    if (!existingState) {
+        const salt = new Uint8Array(32);
+        crypto.getRandomValues(salt);
+        salt[0] = 0;
+        
+        existingState = {
+          game_id: gameId,
+          player_id: playerId,
+          x: 8n, 
+          y: 8n,
+          health: 100n,
+          nonce: 1n,
+          salt: salt
+        };
+    }
     
     log('Connecting to ShadowGrid contract...');
+    document.getElementById('status-text')!.innerText = 'Joining...';
 // @ts-ignore
     deployedContract = await findDeployedContract(p, {
       contractAddress: addr,
       compiledContract: CompiledShadowgridContract,
       privateStateId: 'shadowgrid-state',
-      initialPrivateState: finalInitialState
+      initialPrivateState: existingState
     });
     
-    document.getElementById('contract-addr')!.innerText = addr; localStorage.setItem('shadowgrid-contract', addr);
+    document.getElementById('contract-addr')!.innerText = addr; 
+    localStorage.setItem('shadowgrid-contract', addr);
     
-    if (!existingState) {
+    const contractState = await providers.publicDataProvider.queryContractState(addr);
+    const l = ledger(contractState.data);
+    let isRegistered = false;
+    if (l && l.position_x) {
+        const it = l.position_x[Symbol.iterator]();
+        let next = it.next();
+        while (!next.done) {
+            if (toHex(next.value[0]) === toHex(playerId)) {
+                isRegistered = true;
+                break;
+            }
+            next = it.next();
+        }
+    }
+    
+    if (!isRegistered) {
         log('Registering player...');
-        const tx = await deployedContract.callTx.register(
-          gameId,
-          playerId,
-          8n,
-          8n,
-          100n, // health
-          salt
-        );
+        document.getElementById('status-text')!.innerText = 'Registering ZK Proof...';
+        const tx = await deployedContract.callTx.register();
         log('Registered! TxId: ' + tx.txId);
     } else {
         log('Recovered existing state from local storage. Ready to play!');
     }
+    document.getElementById('status-text')!.innerText = 'Playing';
     
-    generateGrid();
+    updateUI();
   } catch(e: any) {
     log('Error: ' + e.message);
+    document.getElementById('status-text')!.innerText = 'Error';
   }
 });
 
-// We can't generate the active grid until providers are loaded, so just show empty initially.
 const grid = document.getElementById('game-grid')!;
 grid.innerHTML = '';
 for (let i = 0; i < 100; i++) {
@@ -292,3 +374,9 @@ for (let i = 0; i < 100; i++) {
   cell.className = 'cell';
   grid.appendChild(cell);
 }
+
+setInterval(() => {
+    if (deployedContract && providers) {
+        updateUI();
+    }
+}, 5000);
