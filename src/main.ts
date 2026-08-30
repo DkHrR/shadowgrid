@@ -81,9 +81,9 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
       return;
     }
     
-    setNetworkId('preview');
+    setNetworkId('undeployed');
     
-    connectedAPI = await wallet.connect('preview');
+    connectedAPI = await wallet.connect('undeployed');
     log('Wallet connected successfully!');
     setStatus('Wallet Connected');
     
