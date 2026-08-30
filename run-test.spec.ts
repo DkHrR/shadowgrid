@@ -31,12 +31,12 @@ test('E2E Runtime verification', async () => {
     // Dynamic state used by witness
     let witnessState = {
         game_id: 1n,
-        player_id: crypto.randomBytes(32),
+        player_id: crypto.getRandomValues(new Uint8Array(32)),
         x: 2n,
         y: 2n,
         health: 100n,
         nonce: 1n,
-        salt: crypto.randomBytes(32)
+        salt: crypto.getRandomValues(new Uint8Array(32))
     };
     witnessState.salt[0] = 9;
 
@@ -112,10 +112,10 @@ test('E2E Runtime verification', async () => {
         logger.info('Contract deployed successfully at ' + deployedContract.deployTxData.public.contractAddress);
 
         const game_id = 1n;
-        const player_id = crypto.randomBytes(32);
+        const player_id = crypto.getRandomValues(new Uint8Array(32));
         
         const x_old = 2n, y_old = 2n, health_old = 100n, nonce_old = 1n;
-        const salt_old = crypto.randomBytes(32); salt_old[0] = 9;
+        const salt_old = crypto.getRandomValues(new Uint8Array(32)); salt_old[0] = 9;
         
         let current_x = x_old;
         let current_y = y_old;
@@ -203,7 +203,7 @@ await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health
                     evidence = e.message.substring(0, 50).replace(/\n/g, ' ') + '...';
                 }
             } else {
-                const salt_new = crypto.randomBytes(32); salt_new[0] = Number(tc.nonce);
+                const salt_new = crypto.getRandomValues(new Uint8Array(32)); salt_new[0] = Number(tc.nonce);
                 
                 // Set witness state to current authoritative state
                 witnessState = {
