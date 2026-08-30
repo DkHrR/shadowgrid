@@ -81,9 +81,9 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
       return;
     }
     
-    setNetworkId('Testnet');
+    setNetworkId('preview');
     
-    connectedAPI = await wallet.connect('Testnet');
+    connectedAPI = await wallet.connect('preview');
     log('Wallet connected successfully!');
     setStatus('Wallet Connected');
     
@@ -95,8 +95,10 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
     document.getElementById('onboarding-panel')!.classList.add('hidden');
     document.getElementById('lobby-panel')!.classList.remove('hidden');
   } catch (e: any) {
-    log('Connection failed: ' + e.message);
-    document.getElementById('wallet-error')!.innerText = "Connection failed. Please authorize Lace.";
+    console.error("Lace connection failed:", e);
+    const safeError = e.message || e.toString() || "Unknown error";
+    log('Connection failed: ' + safeError);
+    document.getElementById('wallet-error')!.innerText = "Wallet connection failed: " + safeError;
     document.getElementById('wallet-error')!.classList.remove('hidden');
   }
 });
