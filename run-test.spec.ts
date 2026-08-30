@@ -104,13 +104,13 @@ test('E2E Runtime verification', async () => {
             
 console.log('Testing ZKIR reading...');
 try {
-    const ir = await providers.zkConfigProvider.getZKIR('shadowgrid#register');
+    const ir = await providers.zkConfigProvider.getZKIR('register');
     console.log('Successfully read ZKIR, length:', ir.length);
 } catch(e) {
     console.log('Failed to read ZKIR:', e);
 }
 try {
-    const prover = await providers.zkConfigProvider.getProverKey('shadowgrid#register');
+    const prover = await providers.zkConfigProvider.getProverKey('register');
     console.log('Successfully read PROVER key, length:', prover.length);
 } catch(e) {
     console.log('Failed to read PROVER key:', e);
@@ -160,13 +160,13 @@ await deployedContract.callTx.register(game_id, player_id, x_old, y_old, health_
                     
 console.log('Testing ZKIR reading...');
 try {
-    const ir = await providers.zkConfigProvider.getZKIR('shadowgrid#register');
+    const ir = await providers.zkConfigProvider.getZKIR('register');
     console.log('Successfully read ZKIR, length:', ir.length);
 } catch(e) {
     console.log('Failed to read ZKIR:', e);
 }
 try {
-    const prover = await providers.zkConfigProvider.getProverKey('shadowgrid#register');
+    const prover = await providers.zkConfigProvider.getProverKey('register');
     console.log('Successfully read PROVER key, length:', prover.length);
 } catch(e) {
     console.log('Failed to read PROVER key:', e);
