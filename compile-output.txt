@@ -1,1 +1,2 @@
-Compiling 2 circuits:
+Exception: shadowgrid.compact line 30 char 59:
+  expected structure type, received Bytes<32>
