@@ -15,6 +15,7 @@ export struct PlayerPrivateState {
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 export ledger position_x: Map<Bytes<32>, Uint<32>>;
 export ledger position_y: Map<Bytes<32>, Uint<32>>;
+export ledger dummy: Field;
 
 witness localState(): PlayerPrivateState;
 
@@ -23,7 +24,7 @@ export circuit verify_move(
   y_new: Uint<32>,
   new_salt: Bytes<32>
 ): [] {
-  assert(x_new == x_new, "Ok");
+  dummy = 2 as Field;
 }
 
 export circuit register(
@@ -34,6 +35,6 @@ export circuit register(
   health: Uint<32>, 
   salt: Bytes<32>
 ): [] {
-  assert(game_id == game_id, "Ok");
+  dummy = 1 as Field;
 }
 
