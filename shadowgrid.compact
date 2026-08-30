@@ -15,7 +15,6 @@ export struct PlayerPrivateState {
 export ledger commitments: Map<Bytes<32>, Bytes<32>>;
 export ledger position_x: Map<Bytes<32>, Uint<32>>;
 export ledger position_y: Map<Bytes<32>, Uint<32>>;
-export ledger dummy: Field;
 
 witness localState(): PlayerPrivateState;
 
@@ -24,7 +23,13 @@ export circuit verify_move(
   y_new: Uint<32>,
   new_salt: Bytes<32>
 ): [] {
-  dummy = 2 as Field;
+  const old_state = localState();
+  const c = persistentHash<PlayerPrivateState>(old_state);
+  assert(commitments.member(disclose(old_state.player_id)), "Player not registered");
+  
+  commitments.insert(disclose(old_state.player_id), disclose(c));
+  position_x.insert(disclose(old_state.player_id), disclose(x_new));
+  position_y.insert(disclose(old_state.player_id), disclose(y_new));
 }
 
 export circuit register(
@@ -35,6 +40,18 @@ export circuit register(
   health: Uint<32>, 
   salt: Bytes<32>
 ): [] {
-  dummy = 1 as Field;
+  const st = PlayerPrivateState {
+    game_id: game_id,
+    player_id: player_id,
+    x: x,
+    y: y,
+    health: health,
+    nonce: 1 as Uint<64>,
+    salt: salt
+  };
+  const c = persistentHash<PlayerPrivateState>(st);
+  commitments.insert(disclose(player_id), disclose(c));
+  position_x.insert(disclose(player_id), disclose(x));
+  position_y.insert(disclose(player_id), disclose(y));
 }
 
