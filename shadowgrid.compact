@@ -1,4 +1,4 @@
-pragma language_version 0.23;
+﻿pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -24,10 +24,28 @@ export circuit verify_move(
   new_salt: Bytes<32>
 ): [] {
   const old_state = localState();
-  const c = persistentHash<PlayerPrivateState>(old_state);
-  assert(commitments.member(disclose(old_state.player_id)), "Player not registered");
+  const old_c = persistentHash<PlayerPrivateState>(old_state);
   
-  commitments.insert(disclose(old_state.player_id), disclose(c));
+  assert(commitments.member(disclose(old_state.player_id)), "Player not registered");
+  assert(commitments.lookup(disclose(old_state.player_id)) == disclose(old_c), "Invalid state transition");
+  
+  const dx = x_new > old_state.x ? x_new - old_state.x : old_state.x - x_new;
+  const dy = y_new > old_state.y ? y_new - old_state.y : old_state.y - y_new;
+  assert(dx <= 1, "Move too far");
+  assert(dy <= 1, "Move too far");
+  
+  const new_state = PlayerPrivateState {
+    game_id: old_state.game_id,
+    player_id: old_state.player_id,
+    x: x_new,
+    y: y_new,
+    health: old_state.health,
+    nonce: old_state.nonce + 1 as Uint<64>,
+    salt: new_salt
+  };
+  
+  const new_c = persistentHash<PlayerPrivateState>(new_state);
+  commitments.insert(disclose(old_state.player_id), disclose(new_c));
   position_x.insert(disclose(old_state.player_id), disclose(x_new));
   position_y.insert(disclose(old_state.player_id), disclose(y_new));
 }
@@ -40,6 +58,8 @@ export circuit register(
   health: Uint<32>, 
   salt: Bytes<32>
 ): [] {
+  assert(commitments.member(disclose(player_id)) == false, "Player already registered");
+
   const st = PlayerPrivateState {
     game_id: game_id,
     player_id: player_id,
@@ -54,4 +74,3 @@ export circuit register(
   position_x.insert(disclose(player_id), disclose(x));
   position_y.insert(disclose(player_id), disclose(y));
 }
-

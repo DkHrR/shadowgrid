@@ -209,7 +209,11 @@ await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health
 
             const passed = (success === tc.expected);
             logger.info(`[${passed ? 'PASS' : 'FAIL'}] ${tc.name}: Expected ${tc.expected}, got ${success}`);
-            markdownReport += `| ${tc.name} | ${tc.expected} | ${success} | ${passed ? '? PASS' : '? FAIL'} | ${evidence} |\n`;
+            markdownReport += `| ${tc.name} | ${tc.expected} | ${success} | ${passed ? '✅ PASS' : '❌ FAIL'} | ${evidence} |\n`;
+            
+            if (!passed) {
+                throw new Error(`Test case failed: ${tc.name}. Expected ${tc.expected}, got ${success}. Evidence: ${evidence}`);
+            }
         }
 
         fs.writeFileSync('test-results.md', markdownReport);
