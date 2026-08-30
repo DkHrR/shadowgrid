@@ -33,6 +33,7 @@ jobs:
       - name: Patch proof provider
         run: |
           sed -i 's/throw new Error(`Failed Proof Server response.*/const body = await response.text(); throw new Error(`Failed Proof Server response: url="${response.url}" code="${response.status}" body="${body}"`);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
+          sed -i 's/const payload = createCheckPayload(serializedPreimage, keyMaterial?.ir);/console.log("--- keyMaterial in check:", !!keyMaterial, "ir length:", keyMaterial?.ir?.length); const payload = createCheckPayload(serializedPreimage, keyMaterial?.ir);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
 
       - name: Clean previous compiled artifacts
         run: rm -rf dist
