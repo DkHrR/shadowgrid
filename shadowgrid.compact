@@ -52,7 +52,7 @@ export circuit verify_move(
     x: x_new,
     y: y_new,
     health: old_state.health,
-    nonce: old_state.nonce + (1 as Uint<64>),
+    nonce: old_state.nonce + 1 as Uint<64>,
     salt: new_salt
   };
 
