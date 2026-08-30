@@ -4,7 +4,8 @@ import wasm from 'vite-plugin-wasm';
 export default defineConfig({
   publicDir: 'public',
   build: {
-    target: 'esnext'
+    target: 'esnext',
+    outDir: 'build'
   },
   plugins: [
     wasm()
