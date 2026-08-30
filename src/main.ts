@@ -49,16 +49,29 @@ const CompiledShadowgridContract = CompiledContract.make('shadowgrid', Shadowgri
 
 document.getElementById('connect-btn')?.addEventListener('click', async () => {
   try {
-    log('Connecting to Midnight Lace wallet...');
+    log('Connecting to Midnight wallet...');
     const mw = (window as any).midnight;
-    if (!mw || !mw.mnLace) {
-      log('Error: Midnight Lace extension not found');
+    if (!mw) {
+      log('Error: window.midnight is undefined. No Midnight wallet extension detected.');
+      return;
+    }
+    const walletIds = Object.keys(mw);
+    if (walletIds.length === 0) {
+      log('Error: window.midnight is present, but no wallets were found.');
+      return;
+    }
+    log('Detected wallets: ' + walletIds.join(', '));
+    const walletId = walletIds.includes('mnLace') ? 'mnLace' : walletIds[0];
+    const wallet = mw[walletId];
+    
+    if (!wallet) {
+      log('Error: Failed to initialize wallet instance.');
       return;
     }
     
     setNetworkId('Testnet');
     
-    connectedAPI = await mw.mnLace.connect('Testnet');
+    connectedAPI = await wallet.connect('Testnet');
     log('Wallet connected successfully!');
     document.getElementById('status-text')!.innerText = 'Connected';
     
@@ -259,6 +272,7 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
       nonce: 1n,
       salt: salt
     };
+    await p.privateStateProvider.set('shadowgrid-state', initialState);
     
     log('Deploying new ShadowGrid contract...');
 // @ts-ignore
@@ -320,6 +334,7 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
           nonce: 1n,
           salt: salt
         };
+        await p.privateStateProvider.set('shadowgrid-state', existingState);
     }
     
     log('Connecting to ShadowGrid contract...');
