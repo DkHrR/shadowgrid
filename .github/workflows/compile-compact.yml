@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Patch proof provider
+        run: |
+          sed -i 's/throw new Error(`Failed Proof Server response.*/const body = await response.text(); throw new Error(`Failed Proof Server response: url="${response.url}" code="${response.status}" body="${body}"`);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
+
       - name: Clean previous compiled artifacts
         run: rm -rf dist
 
