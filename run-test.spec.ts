@@ -52,7 +52,9 @@ test('E2E Runtime verification', async () => {
 
     console.log('CIRCUITS:', ContractDef.circuits);
     const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
-        CompiledContract.withWitnesses({ localState: () => witnessState }),
+        CompiledContract.withWitnesses({
+            localState: (context) => [context.privateState, witnessState]
+        }),
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
