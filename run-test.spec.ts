@@ -41,7 +41,7 @@ test('E2E Runtime verification', async () => {
     witnessState.salt[0] = 9;
 
     const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
-        CompiledContract.withWitnesses({ localState: () => witnessState }), CompiledContract.withCompiledFileAssets(path.resolve(distPath)) 
+        CompiledContract.withWitnesses({ localState: () => witnessState }),
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
