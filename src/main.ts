@@ -306,10 +306,12 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     setStatus('Playing');
     
     updateUI();
-  } catch(e: any) {
-    log('Error: ' + e.message);
-    setStatus('Error deploying');
-  }
+    } catch(e: any) {
+      console.error("ShadowGrid deployment failed:", e);
+      const safeError = e.message || e.toString() || "Unknown error";
+      log('Error: ' + safeError);
+      setStatus('Deployment failed: ' + safeError);
+    }
 });
 
 const savedAddr = localStorage.getItem('shadowgrid-contract'); if (savedAddr) { (document.getElementById('contract-input') as HTMLInputElement).value = savedAddr; }
