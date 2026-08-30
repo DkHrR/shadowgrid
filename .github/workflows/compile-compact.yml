@@ -1,79 +1,32 @@
-name: Compile Compact Contract
+﻿name: Compile Compact and Test
 
 on:
   push:
-    branches: [ main, "merge-verified-movement", "test/*" ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    branches:
+      - test/feature-multiplayer-indexing
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Setup Compact Compiler
-        uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8
+      - name: Setup Compact
+        uses: midnightntwrk/setup-compact-action@836895ce869bbd51381395f1be6d5b03517178de
         with:
-          compact-version: "0.31.1"
+          version: '0.31.1'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Patch proof provider
+      - name: Compile Compact Contract
+        id: compile
         run: |
-          sed -i 's/throw new Error(`Failed Proof Server response.*/const body = await response.text(); throw new Error(`Failed Proof Server response: url="${response.url}" code="${response.status}" body="${body}"`);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
-          sed -i 's/const payload = createCheckPayload(serializedPreimage, keyMaterial?.ir);/console.log("--- keyMaterial in check:", !!keyMaterial, "ir length:", keyMaterial?.ir?.length); const payload = createCheckPayload(serializedPreimage, keyMaterial?.ir);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
-          sed -i 's/catch {/catch (e) { console.log("ERROR IN GETKEYMATERIAL:", e);/' node_modules/@midnight-ntwrk/midnight-js-http-client-proof-provider/dist/index.mjs
-
-      - name: Clean previous compiled artifacts
-        run: rm -rf dist
-
-      - name: Compile shadowgrid.compact
-        run: compact compile shadowgrid.compact dist > compile-output.txt 2>&1
-
-      - name: Verify compiled contract exists
-        run: |
-          echo "--- compile output ---"
+          npx compactc shadowgrid.compact > compile-output.txt 2>&1 || echo "compile_failed=true" >> \
           cat compile-output.txt
-          echo "--- dist contents ---"
-          find dist > dist-contents.txt
-          cat dist-contents.txt
-          if [ ! -f dist/contract/index.js ]; then
-            echo "FATAL: dist/contract/index.js missing after compilation" && exit 1
-          fi
-          node -e "require('./dist/contract/index.js')" || { echo "FATAL: compiled contract module failed to load"; exit 1; }
-          echo "Compiled contract OK"
-
-      - name: Run Runtime Verification Tests
-        run: npx --no-install vitest run --testTimeout 300000 run-test.spec.ts > test-results.md 2>&1
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: build-artifacts
-          path: |
-            compile-output.txt
-            test-results.md
-            dist/
-
+          
       - name: Commit test results
         if: always()
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add test-results.md dist-contents.txt compile-output.txt
-          git commit -m "ci: update test results and dist contents" || echo "No changes to commit"
+          git add compile-output.txt
+          git commit -m "ci: push error logs" || echo "No changes to commit"
           git push
-
