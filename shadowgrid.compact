@@ -1,4 +1,4 @@
-﻿pragma language_version 0.23;
+pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -29,10 +29,10 @@ export circuit verify_move(
   assert(commitments.member(disclose(old_state.player_id)), "Player not registered");
   assert(commitments.lookup(disclose(old_state.player_id)) == disclose(old_c), "Invalid state transition");
   
-  const dx = x_new > old_state.x ? x_new - old_state.x : old_state.x - x_new;
-  const dy = y_new > old_state.y ? y_new - old_state.y : old_state.y - y_new;
-  assert(dx <= 1, "Move too far");
-  assert(dy <= 1, "Move too far");
+  const dx_ok = (x_new == old_state.x) || (x_new == old_state.x + (1 as Uint<32>)) || (x_new + (1 as Uint<32>) == old_state.x);
+  const dy_ok = (y_new == old_state.y) || (y_new == old_state.y + (1 as Uint<32>)) || (y_new + (1 as Uint<32>) == old_state.y);
+  assert(dx_ok, "Move too far");
+  assert(dy_ok, "Move too far");
   
   const new_state = PlayerPrivateState {
     game_id: old_state.game_id,
