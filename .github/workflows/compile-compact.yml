@@ -17,39 +17,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Compact Compiler
+        uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8
+        with:
+          compact-version: "0.31.1"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Download and verify official compactc binary
-        run: |
-          set -e
-          COMPACTC_VERSION="0.31.1"
-          OS="x86_64-unknown-linux-musl"
-          URL="https://github.com/midnightntwrk/compact/releases/download/compactc-v${COMPACTC_VERSION}/compactc_v${COMPACTC_VERSION}_${OS}.zip"
-          curl -fL -o compactc.zip "$URL"
-          echo "Verifying checksum..."
-          EXPECTED_SHA256="e291b4bab4d4e857707008f8b1c25c2b8e0c843f6c737d0ee6c0d9ac69a6bbfb"
-          ACTUAL_SHA256=$(sha256sum compactc.zip | cut -d ' ' -f1)
-          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
-            echo "Checksum mismatch! expected=$EXPECTED_SHA256 got=$ACTUAL_SHA256" && exit 1
-          fi
-          unzip compactc.zip -d compactc_bin
-          chmod +x compactc_bin/compactc
-          ./compactc_bin/compactc --version
-          echo "COMPACT_HOME=${{ github.workspace }}/compactc_bin" >> $GITHUB_ENV
 
       - name: Clean previous compiled artifacts
         run: rm -rf dist
 
       - name: Compile shadowgrid.compact
-        run: npx --no-install run-compactc shadowgrid.compact dist > compile-output.txt 2>&1
-        env:
-          COMPACTC_VERSION: "0.31.1"
+        run: compact compile shadowgrid.compact dist > compile-output.txt 2>&1
 
       - name: Verify compiled contract exists
         run: |
@@ -57,6 +42,7 @@ jobs:
           cat compile-output.txt
           echo "--- dist contents ---"
           find dist > dist-contents.txt
+          cat dist-contents.txt
           if [ ! -f dist/contract/index.js ]; then
             echo "FATAL: dist/contract/index.js missing after compilation" && exit 1
           fi
@@ -84,3 +70,4 @@ jobs:
           git add test-results.md dist-contents.txt compile-output.txt
           git commit -m "ci: update test results and dist contents" || echo "No changes to commit"
           git push
+
