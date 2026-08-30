@@ -288,9 +288,8 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
       nonce: 1n,
       salt: salt
     };
-    await p.privateStateProvider.set('shadowgrid-state', initialState);
     
-// @ts-ignore
+    // @ts-ignore
     deployedContract = await deployContract(p, {
       compiledContract: CompiledShadowgridContract,
       privateStateId: 'shadowgrid-state',
@@ -298,6 +297,8 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     });
     
     const addr = deployedContract.deployTxData.public.contractAddress;
+    p.privateStateProvider.setContractAddress(addr);
+    
     showGamePanel(addr);
     
     setStatus('Registering ZK Proof...');
@@ -325,6 +326,7 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
   try {
     setStatus('Joining...');
     const p = await getProviders();
+    p.privateStateProvider.setContractAddress(addr);
     const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
     
     let existingState;
