@@ -13,11 +13,15 @@ import { contract as shadowgridContract, Contract as ShadowgridContractClass, le
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
 const log = (msg: string) => {
-  const logs = document.getElementById('logs');
-  if (logs) {
-    logs.innerHTML += msg + '\n';
-    logs.scrollTop = logs.scrollHeight;
-  }
+  console.log(msg); // Only log to console now
+};
+
+const setStatus = (msg: string) => {
+    const el = document.getElementById('status-display');
+    if (el) {
+        el.innerText = msg;
+        el.classList.remove('hidden');
+    }
 };
 
 type PrivateState = {
@@ -51,13 +55,21 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
   try {
     log('Connecting to Midnight wallet...');
     const mw = (window as any).midnight;
+    
+    const showError = () => {
+      document.getElementById('wallet-error')!.innerText = "Midnight Lace is required to play ShadowGrid.";
+      document.getElementById('wallet-error')!.classList.remove('hidden');
+      document.getElementById('get-lace-btn')!.classList.remove('hidden');
+      document.getElementById('connect-btn')!.classList.add('hidden');
+    };
+
     if (!mw) {
-      log('Error: window.midnight is undefined. No Midnight wallet extension detected.');
+      showError();
       return;
     }
     const walletIds = Object.keys(mw);
     if (walletIds.length === 0) {
-      log('Error: window.midnight is present, but no wallets were found.');
+      showError();
       return;
     }
     log('Detected wallets: ' + walletIds.join(', '));
@@ -65,7 +77,7 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
     const wallet = mw[walletId];
     
     if (!wallet) {
-      log('Error: Failed to initialize wallet instance.');
+      showError();
       return;
     }
     
@@ -73,16 +85,19 @@ document.getElementById('connect-btn')?.addEventListener('click', async () => {
     
     connectedAPI = await wallet.connect('Testnet');
     log('Wallet connected successfully!');
-    document.getElementById('status-text')!.innerText = 'Connected';
+    setStatus('Wallet Connected');
     
     shieldedAddresses = await connectedAPI.getShieldedAddresses();
     document.getElementById('wallet-addr')!.innerText = shieldedAddresses.shieldedCoinPublicKey.substring(0, 16) + '...';
     myPlayerIdHex = toHex(fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32));
     
-    document.getElementById('host-btn')?.removeAttribute('disabled');
-    document.getElementById('join-btn')?.removeAttribute('disabled');
+    // Switch UI panels
+    document.getElementById('onboarding-panel')!.classList.add('hidden');
+    document.getElementById('lobby-panel')!.classList.remove('hidden');
   } catch (e: any) {
     log('Connection failed: ' + e.message);
+    document.getElementById('wallet-error')!.innerText = "Connection failed. Please authorize Lace.";
+    document.getElementById('wallet-error')!.classList.remove('hidden');
   }
 });
 
@@ -195,27 +210,20 @@ const updateUI = async () => {
 };
 
 const handleMove = async (newX: number, newY: number) => {
-  if (!deployedContract) {
-    log('Join or host a game first!');
-    return;
-  }
+  if (!deployedContract) return;
   
   const p = await getProviders();
   const oldState = await p.privateStateProvider.get('shadowgrid-state');
-  if (!oldState) {
-      log("Error: Private state not found");
-      return;
-  }
+  if (!oldState) return;
   
   const dx = Math.abs(Number(oldState.x) - newX);
   const dy = Math.abs(Number(oldState.y) - newY);
   if (dx + dy !== 1) {
-      log('Invalid move! You can only move 1 tile up, down, left, or right.');
+      log('Invalid move!');
       return;
   }
 
-  log(`Attempting to move to (${newX}, ${newY})...`);
-  document.getElementById('status-text')!.innerText = 'Generating ZK Proof...';
+  setStatus('Generating ZK Proof...');
 
   try {
     const newSalt = new Uint8Array(32);
@@ -240,21 +248,27 @@ const handleMove = async (newX: number, newY: number) => {
       newSalt
     );
     log('Transaction accepted! TxId: ' + tx.txId);
-    document.getElementById('status-text')!.innerText = 'Move Confirmed';
+    setStatus('Move Confirmed');
     
     updateUI();
   } catch (e: any) {
     log('Move failed: ' + e.message);
-    document.getElementById('status-text')!.innerText = 'Move Failed';
+    setStatus('Move Failed');
     // Revert state
     await p.privateStateProvider.set('shadowgrid-state', oldState);
   }
 };
 
+const showGamePanel = (addr: string) => {
+    document.getElementById('lobby-panel')!.classList.add('hidden');
+    document.getElementById('game-panel')!.classList.remove('hidden');
+    document.getElementById('contract-addr')!.innerText = addr.substring(0, 16) + '...';
+    localStorage.setItem('shadowgrid-contract', addr);
+}
+
 document.getElementById('host-btn')?.addEventListener('click', async () => {
   if (!connectedAPI) return;
-  log('Deploying contract and registering initial state...');
-  document.getElementById('status-text')!.innerText = 'Deploying...';
+  setStatus('Deploying...');
   
   try {
     const p = await getProviders();
@@ -274,7 +288,6 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     };
     await p.privateStateProvider.set('shadowgrid-state', initialState);
     
-    log('Deploying new ShadowGrid contract...');
 // @ts-ignore
     deployedContract = await deployContract(p, {
       compiledContract: CompiledShadowgridContract,
@@ -283,20 +296,17 @@ document.getElementById('host-btn')?.addEventListener('click', async () => {
     });
     
     const addr = deployedContract.deployTxData.public.contractAddress;
-    log('Contract deployed at: ' + addr);
-    document.getElementById('contract-addr')!.innerText = addr; 
-    localStorage.setItem('shadowgrid-contract', addr);
+    showGamePanel(addr);
     
-    log('Registering player...');
-    document.getElementById('status-text')!.innerText = 'Registering ZK Proof...';
+    setStatus('Registering ZK Proof...');
     const tx = await deployedContract.callTx.register();
     log('Registered! TxId: ' + tx.txId);
-    document.getElementById('status-text')!.innerText = 'Playing';
+    setStatus('Playing');
     
     updateUI();
   } catch(e: any) {
     log('Error: ' + e.message);
-    document.getElementById('status-text')!.innerText = 'Error';
+    setStatus('Error deploying');
   }
 });
 
@@ -306,12 +316,10 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
   if (!connectedAPI) return;
   
   const addr = (document.getElementById('contract-input') as HTMLInputElement).value;
-  if (!addr) {
-      log('Please enter a contract address to join');
-      return;
-  }
+  if (!addr) return;
   
   try {
+    setStatus('Joining...');
     const p = await getProviders();
     const playerId = fromHex(shieldedAddresses.shieldedCoinPublicKey).subarray(0, 32);
     
@@ -337,8 +345,6 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
         await p.privateStateProvider.set('shadowgrid-state', existingState);
     }
     
-    log('Connecting to ShadowGrid contract...');
-    document.getElementById('status-text')!.innerText = 'Joining...';
 // @ts-ignore
     deployedContract = await findDeployedContract(p, {
       contractAddress: addr,
@@ -347,8 +353,7 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
       initialPrivateState: existingState
     });
     
-    document.getElementById('contract-addr')!.innerText = addr; 
-    localStorage.setItem('shadowgrid-contract', addr);
+    showGamePanel(addr);
     
     const contractState = await providers.publicDataProvider.queryContractState(addr);
     const l = ledger(contractState.data);
@@ -366,19 +371,16 @@ document.getElementById('join-btn')?.addEventListener('click', async () => {
     }
     
     if (!isRegistered) {
-        log('Registering player...');
-        document.getElementById('status-text')!.innerText = 'Registering ZK Proof...';
+        setStatus('Registering ZK Proof...');
         const tx = await deployedContract.callTx.register();
         log('Registered! TxId: ' + tx.txId);
-    } else {
-        log('Recovered existing state from local storage. Ready to play!');
     }
-    document.getElementById('status-text')!.innerText = 'Playing';
+    setStatus('Playing');
     
     updateUI();
   } catch(e: any) {
     log('Error: ' + e.message);
-    document.getElementById('status-text')!.innerText = 'Error';
+    setStatus('Error joining');
   }
 });
 
