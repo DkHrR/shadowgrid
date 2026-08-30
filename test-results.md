@@ -22,8 +22,8 @@ Sourcemap for "/home/runner/work/shadowgrid/shadowgrid/dist/contract/index.js" p
 
 [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
 [2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
-[2m   Start at [22m 02:59:40
-[2m   Duration [22m 2.72s[2m (transform 97ms, setup 0ms, import 2.54s, tests 55ms, environment 0ms)[22m
+[2m   Start at [22m 03:00:59
+[2m   Duration [22m 2.73s[2m (transform 99ms, setup 0ms, import 2.55s, tests 55ms, environment 0ms)[22m
 
 
 ::error file=/home/runner/work/shadowgrid/shadowgrid/run-test.spec.ts,title=run-test.spec.ts > E2E Runtime verification,line=34,column=27::TypeError: crypto.randomBytes is not a function%0A ❯ run-test.spec.ts:34:27%0A%0A
