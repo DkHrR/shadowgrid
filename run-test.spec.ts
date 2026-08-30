@@ -40,33 +40,8 @@ test('E2E Runtime verification', async () => {
     };
     witnessState.salt[0] = 9;
 
-    const zkirDir = path.resolve(distPath, 'zkir');
-    const keysDir = path.resolve(distPath, 'keys');
-    if (fs.existsSync(zkirDir)) {
-        for (const file of fs.readdirSync(zkirDir)) {
-            if (file === 'verify_move.bzkir' || file === 'register.bzkir') {
-                const src = path.join(zkirDir, file);
-                const dst = path.join(zkirDir, 'shadowgrid#' + file);
-                fs.copyFileSync(src, dst);
-                console.log(`Copied ${file} (size: ${fs.statSync(dst).size} bytes) to ${dst}`);
-            }
-        }
-    }
-    if (fs.existsSync(keysDir)) {
-        for (const file of fs.readdirSync(keysDir)) {
-            if (file === 'verify_move.verifier' || file === 'verify_move.prover' || file === 'register.verifier' || file === 'register.prover') {
-                const src = path.join(keysDir, file);
-                const dst = path.join(keysDir, 'shadowgrid#' + file);
-                fs.copyFileSync(src, dst);
-                console.log(`Copied ${file} (size: ${fs.statSync(dst).size} bytes) to ${dst}`);
-            }
-        }
-    }
-
     const CompiledShadowgridContract = CompiledContract.make('shadowgrid', ContractDef).pipe(
-        CompiledContract.withWitnesses({
-            localState: () => witnessState
-        }), 
+        CompiledContract.withWitnesses({ localState: () => witnessState }), CompiledContract.withCompiledFileAssets(path.resolve(distPath)) 
         CompiledContract.withCompiledFileAssets(path.resolve(distPath))
     );
 
@@ -241,3 +216,4 @@ await deployedContract.callTx.register(game_id, player_id, tc.x, tc.y, tc.health
         await testEnv.shutdown();
     }
 }, 300000);
+
