@@ -40,7 +40,12 @@ jobs:
         run: rm -rf dist
 
       - name: Compile shadowgrid.compact
-        run: compact compile shadowgrid.compact dist > compile-output.txt 2>&1
+        run: |
+          compact compile shadowgrid.compact dist > compile-output.txt 2>&1
+          echo -e "\n=== TYPESCRIPT DEFINITIONS ===" >> compile-output.txt
+          cat dist/contract/index.d.ts >> compile-output.txt
+          echo -e "\n=== COMPILED JS INDEX === " >> compile-output.txt
+          cat dist/contract/index.js >> compile-output.txt
 
       - name: Verify compiled contract exists
         run: |
